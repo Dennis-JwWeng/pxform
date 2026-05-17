@@ -11,39 +11,43 @@ and is meant to be served as a GitHub Pages site.
 ```
 index.html        # the whole page (HTML + CSS + JS inline)
 assets/
-  teaser.png      # hero background image      (TODO: replace)
+  gallary.png     # hero background image
   pipeline.png    # method / pipeline figure   (TODO: replace)
 gallery/
+  manifest.json   # [{edit_id, edit_type, prompt}, ...]
   <edit_id>/
-    before.glb    # source 3D asset
-    after.glb     # edited 3D asset
-    poster.png    # preview thumbnail (shown before "Load 3D")
+    before.glb    # SLAT-decoded source mesh
+    after.glb     # SLAT-decoded edited mesh
+    compare.png   # 2D before|after reference (ori.png | edit_img.png)
 ```
 
-`assets/gallary.png` is the hero background. `assets/pipeline.png` is a
-**placeholder** — replace with the real pipeline figure.
+`gallery/` holds editing examples from the **h3d_edit** bench. Both
+`before.glb` and `after.glb` are **decoded from SLAT** (`ori_latents.npz` /
+`edit_latents.npz`) through the *same* TRELLIS `decode_slat` + postprocess
+path, so the before/after pair has matching mesh quality. The pair is then
+**jointly normalized** — centred and scaled by the *same* transform (fit to a
+unit box from their combined bounding box) — so both viewers display at a
+consistent size and stay camera-aligned.
 
-`gallery/` holds 7 editing examples from the Pxform Dataset (one per edit
-type). For each example, `before.glb` and `after.glb` are **jointly
-normalized**: both are centred and scaled by the *same* transform (fit to a
-unit box from their combined bounding box), so the before/after slider stays
-perfectly registered and all cards display objects at a consistent size.
-Examples are chosen to have comparable before/after mesh quality.
+The decoder lives in the parent repo:
+`scripts/tools/decode_h3d_edit_bench_to_glb.py` (run in the `vinedresser3d`
+conda env, needs a GPU + `checkpoints/TRELLIS-text-xlarge`).
 
 ## Editing Results section
 
-The gallery is a **one-column list of edit cards**. Each card has:
+The gallery is **grouped by edit type**; each type is a row of up to three
+cards. Each card has three panels:
 
-- a colour-coded **edit-type chip** (addition / deletion / modification /
-  scale / color / material / global)
-- the editing **prompt**
-- a before/after slider — left of the slider is `before.glb` (Before),
-  right is `after.glb` (After)
+- **left** — `before.glb` 3D viewer
+- **middle** — the `compare.png` 2D before/after reference, with the edit
+  instruction printed below it
+- **right** — `after.glb` 3D viewer
 
-To add a new example: copy a `gallery/<edit_id>/` folder (with `before.glb`,
-`after.glb`, `poster.png`) and copy one `<div class="results-gallery-item">`
-block in `index.html`, updating the chip `data-type`, prompt and the three
-file paths.
+Click **Load 3D** to load both meshes; dragging either viewer rotates both
+(the Before/After cameras stay in sync).
+
+To add examples: decode them with the tool above into `gallery/<edit_id>/`,
+add an entry to `gallery/manifest.json`, and regenerate the Results section.
 
 ## TODO before publishing
 

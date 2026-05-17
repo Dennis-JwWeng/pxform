@@ -404,224 +404,130 @@
         .results-gallery {
             display: flex;
             flex-direction: column;
-            gap: 28px;
-            max-width: 900px;
+            gap: 44px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* Edit card header: edit-type chip + prompt */
-        .rg-card-head {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 16px 18px;
-            border-bottom: 1px solid var(--border);
-        }
-
+        /* edit-type chip */
         .rg-chip {
             flex-shrink: 0;
-            font-size: 0.72rem;
+            font-size: 0.74rem;
             font-weight: 700;
             letter-spacing: 0.04em;
             text-transform: uppercase;
-            padding: 5px 12px;
+            padding: 5px 13px;
             border-radius: 100px;
             border: 1px solid transparent;
         }
+        .rg-chip[data-type="addition"]{color:#4ade80;background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.3);}
+        .rg-chip[data-type="deletion"]{color:#f87171;background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.3);}
+        .rg-chip[data-type="modification"]{color:#818cf8;background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.3);}
+        .rg-chip[data-type="scale"]{color:#fbbf24;background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);}
+        .rg-chip[data-type="color"]{color:#f472b6;background:rgba(244,114,182,.12);border-color:rgba(244,114,182,.3);}
+        .rg-chip[data-type="material"]{color:#2dd4bf;background:rgba(45,212,191,.12);border-color:rgba(45,212,191,.3);}
+        .rg-chip[data-type="global"]{color:#a855f7;background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.3);}
 
-        .rg-chip[data-type="addition"]     { color: #4ade80; background: rgba(74,222,128,0.12);  border-color: rgba(74,222,128,0.3); }
-        .rg-chip[data-type="deletion"]     { color: #f87171; background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.3); }
-        .rg-chip[data-type="modification"] { color: #818cf8; background: rgba(129,140,248,0.12); border-color: rgba(129,140,248,0.3); }
-        .rg-chip[data-type="scale"]        { color: #fbbf24; background: rgba(251,191,36,0.12);  border-color: rgba(251,191,36,0.3); }
-        .rg-chip[data-type="color"]        { color: #f472b6; background: rgba(244,114,182,0.12); border-color: rgba(244,114,182,0.3); }
-        .rg-chip[data-type="material"]     { color: #2dd4bf; background: rgba(45,212,191,0.12);  border-color: rgba(45,212,191,0.3); }
-        .rg-chip[data-type="global"]       { color: #a855f7; background: rgba(168,85,247,0.12);  border-color: rgba(168,85,247,0.3); }
-
-        .rg-prompt {
-            font-size: 1rem;
-            font-weight: 500;
+        .edit-group-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+        .edit-group-head h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
             color: var(--text);
-            line-height: 1.5;
         }
-
-        /* Camera reset button */
-        .sv-reset-btn {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            z-index: 10;
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            background: rgba(10, 10, 15, 0.8);
-            border: 1px solid var(--border);
+        .edit-group-head .edit-group-count {
+            font-size: 0.85rem;
             color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
         }
 
-        .sv-reset-btn:hover {
-            background: rgba(99, 102, 241, 0.8);
-            color: #fff;
-            border-color: rgba(99, 102, 241, 0.5);
+        .edit-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
         }
 
-        .sv-reset-btn svg {
-            width: 14px;
-            height: 14px;
-        }
-
-        /* Expand button */
-        .sv-expand-btn {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            z-index: 10;
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            background: rgba(10, 10, 15, 0.8);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .sv-expand-btn:hover {
-            background: rgba(99, 102, 241, 0.8);
-            color: #fff;
-            border-color: rgba(99, 102, 241, 0.5);
-        }
-
-        .sv-expand-btn svg {
-            width: 14px;
-            height: 14px;
-        }
-
-        /* Modal overlay */
-        .viewer-modal-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .viewer-modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .viewer-modal {
+        .edit-card {
             position: relative;
-            width: 90vw;
-            max-width: 1400px;
-        }
-
-        .viewer-modal-close {
-            position: absolute;
-            top: -16px;
-            right: -16px;
-            z-index: 10;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(239, 68, 68, 0.8);
-            border: none;
-            color: #fff;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .viewer-modal-close:hover {
-            background: rgba(239, 68, 68, 1);
-            transform: scale(1.1);
-        }
-
-        .viewer-modal-content {
-            width: 100%;
-        }
-
-        .viewer-modal-content .results-gallery-item {
-            width: 100%;
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .viewer-modal-content .sv-expand-btn {
-            display: none;
-        }
-
-        .viewer-modal-content .rg-input {
-            aspect-ratio: 1 / 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .viewer-modal-content .rg-input img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .viewer-modal-content .rg-output.split-viewer {
-            aspect-ratio: 1 / 1;
-            height: auto;
-        }
-
-        .results-gallery-item {
+            border: 1px solid var(--border);
             border-radius: 14px;
             overflow: hidden;
-            border: 1px solid var(--border);
             background: var(--bg-card);
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr 0.92fr 1fr;
         }
 
-        .rg-output {
-            background: #13131a;
+        .ec-panel {
             position: relative;
+            background: #0d0d14;
+            aspect-ratio: 3 / 4;
         }
-
-        .rg-output.split-viewer {
-            aspect-ratio: 16 / 10;
-        }
-
-        .rg-output.split-viewer model-viewer {
-            position: absolute;
-            inset: 0;
+        .ec-panel model-viewer {
             width: 100%;
             height: 100%;
             --poster-color: transparent;
+            visibility: hidden;
+        }
+        .ec-corner {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            z-index: 6;
+            font-size: 0.66rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 3px 9px;
+            border-radius: 5px;
+            background: rgba(10, 10, 15, 0.78);
+            color: var(--text-muted);
+            pointer-events: none;
         }
 
-        @media (max-width: 1200px) {
-            .results-gallery {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .ec-mid {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        .ec-mid-img {
+            flex: 1;
+            min-height: 0;
+            background: #0d0d14;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        .ec-mid-img img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+        .ec-prompt {
+            padding: 12px 14px;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            color: var(--text);
+            border-top: 1px solid var(--border);
+        }
+        .ec-prompt .ec-prompt-label {
+            display: block;
+            font-size: 0.64rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 4px;
         }
 
-        @media (max-width: 600px) {
-            .results-gallery {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 1100px) {
+            .edit-row { grid-template-columns: 1fr; }
         }
 
         .sv-load-btn {
@@ -1333,99 +1239,61 @@
         <div class="fade-in">
             <div class="section-label">Editing Results</div>
             <p class="section-desc">
-                Each card is one editing example from the <strong>Pxform Dataset</strong>: an edit-type tag, the natural-language prompt, and a before/after 3D pair. Click "Load 3D", then drag the slider to wipe between the <strong>Before</strong> asset (left) and the <strong>After</strong> result (right). Drag to rotate, scroll to zoom.
+                Editing examples from the <strong>Pxform Dataset</strong>, grouped by edit type. Each card shows the <strong>Before</strong> 3D asset (left), the <strong>After</strong> result (right), and in the middle the 2D before/after reference with the edit instruction below. Both 3D meshes are decoded from SLAT through the same pipeline. Click "Load 3D", then drag either viewer to rotate &mdash; the Before and After cameras stay in sync.
             </p>
         </div>
         <div class="results-gallery fade-in">
-            <div class="results-gallery-item">
-                <div class="rg-card-head">
-                    <span class="rg-chip" data-type="addition">Addition</span>
-                    <span class="rg-prompt">&ldquo;Add the circular drumhead&rdquo;</span>
+            <div class="edit-group">
+                <div class="edit-group-head">
+                    <span class="rg-chip" data-type="modification">modification</span>
+                    <span class="edit-group-count">3 examples</span>
                 </div>
-                <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/add_c05369adb63b41968de1cb242c22e51d_001/after.glb" poster="gallery/add_c05369adb63b41968de1cb242c22e51d_001/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/add_c05369adb63b41968de1cb242c22e51d_001/before.glb" poster="gallery/add_c05369adb63b41968de1cb242c22e51d_001/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
-                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
+                <div class="edit-row">
+                <div class="edit-card">
+                    <div class="ec-panel">
+                        <span class="ec-corner">Before</span>
+                        <model-viewer class="ec-before" camera-orbit="180deg 90deg auto" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="gallery/mod_04acd5704bbf456cb96d4b35100319d8_001/before.glb"></model-viewer>
+                    </div>
+                    <div class="ec-mid">
+                        <div class="ec-mid-img"><img src="gallery/mod_04acd5704bbf456cb96d4b35100319d8_001/compare.png" alt="before / after reference" loading="lazy" /></div>
+                        <div class="ec-prompt"><span class="ec-prompt-label">Edit instruction</span>&ldquo;Replace the arms with mechanical robotic limbs&rdquo;</div>
+                    </div>
+                    <div class="ec-panel">
+                        <span class="ec-corner">After</span>
+                        <model-viewer class="ec-after" camera-orbit="180deg 90deg auto" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="gallery/mod_04acd5704bbf456cb96d4b35100319d8_001/after.glb"></model-viewer>
+                    </div>
+                    <button class="ec-load sv-load-btn">Load 3D</button>
                 </div>
-            </div>
-            <div class="results-gallery-item">
-                <div class="rg-card-head">
-                    <span class="rg-chip" data-type="deletion">Deletion</span>
-                    <span class="rg-prompt">&ldquo;Remove both hamburger buns, leaving only the fillings.&rdquo;</span>
+                <div class="edit-card">
+                    <div class="ec-panel">
+                        <span class="ec-corner">Before</span>
+                        <model-viewer class="ec-before" camera-orbit="180deg 90deg auto" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="gallery/mod_06fff96209494977ab54fb95ce4cdce5_000/before.glb"></model-viewer>
+                    </div>
+                    <div class="ec-mid">
+                        <div class="ec-mid-img"><img src="gallery/mod_06fff96209494977ab54fb95ce4cdce5_000/compare.png" alt="before / after reference" loading="lazy" /></div>
+                        <div class="ec-prompt"><span class="ec-prompt-label">Edit instruction</span>&ldquo;Replace the beige beret with a sharp black fedora.&rdquo;</div>
+                    </div>
+                    <div class="ec-panel">
+                        <span class="ec-corner">After</span>
+                        <model-viewer class="ec-after" camera-orbit="180deg 90deg auto" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="gallery/mod_06fff96209494977ab54fb95ce4cdce5_000/after.glb"></model-viewer>
+                    </div>
+                    <button class="ec-load sv-load-btn">Load 3D</button>
                 </div>
-                <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/del_d5d543a334114795a7ac5276827b2708_001/after.glb" poster="gallery/del_d5d543a334114795a7ac5276827b2708_001/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/del_d5d543a334114795a7ac5276827b2708_001/before.glb" poster="gallery/del_d5d543a334114795a7ac5276827b2708_001/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
-                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
+                <div class="edit-card">
+                    <div class="ec-panel">
+                        <span class="ec-corner">Before</span>
+                        <model-viewer class="ec-before" camera-orbit="180deg 90deg auto" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="gallery/mod_096263d8e9e0467490d46f9d8d419f5b_000/before.glb"></model-viewer>
+                    </div>
+                    <div class="ec-mid">
+                        <div class="ec-mid-img"><img src="gallery/mod_096263d8e9e0467490d46f9d8d419f5b_000/compare.png" alt="before / after reference" loading="lazy" /></div>
+                        <div class="ec-prompt"><span class="ec-prompt-label">Edit instruction</span>&ldquo;Replace the wooden table surface with a glass top&rdquo;</div>
+                    </div>
+                    <div class="ec-panel">
+                        <span class="ec-corner">After</span>
+                        <model-viewer class="ec-after" camera-orbit="180deg 90deg auto" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="gallery/mod_096263d8e9e0467490d46f9d8d419f5b_000/after.glb"></model-viewer>
+                    </div>
+                    <button class="ec-load sv-load-btn">Load 3D</button>
                 </div>
-            </div>
-            <div class="results-gallery-item">
-                <div class="rg-card-head">
-                    <span class="rg-chip" data-type="modification">Modification</span>
-                    <span class="rg-prompt">&ldquo;Replace the floppy hat with a sharp, angular helmet&rdquo;</span>
-                </div>
-                <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/mod_cb1858fed9f947eba352df0831386333_000/after.glb" poster="gallery/mod_cb1858fed9f947eba352df0831386333_000/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/mod_cb1858fed9f947eba352df0831386333_000/before.glb" poster="gallery/mod_cb1858fed9f947eba352df0831386333_000/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
-                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
-                </div>
-            </div>
-            <div class="results-gallery-item">
-                <div class="rg-card-head">
-                    <span class="rg-chip" data-type="scale">Scale</span>
-                    <span class="rg-prompt">&ldquo;Shrink the hat to a smaller size&rdquo;</span>
-                </div>
-                <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/scl_d97e0df624bf4eb7a14be91918af5699_005/after.glb" poster="gallery/scl_d97e0df624bf4eb7a14be91918af5699_005/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/scl_d97e0df624bf4eb7a14be91918af5699_005/before.glb" poster="gallery/scl_d97e0df624bf4eb7a14be91918af5699_005/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
-                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
-                </div>
-            </div>
-            <div class="results-gallery-item">
-                <div class="rg-card-head">
-                    <span class="rg-chip" data-type="color">Color</span>
-                    <span class="rg-prompt">&ldquo;Repaint the car body in deep crimson red.&rdquo;</span>
-                </div>
-                <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/clr_cc2478821c3d44c7b3c6ad760cef563a_008/after.glb" poster="gallery/clr_cc2478821c3d44c7b3c6ad760cef563a_008/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/clr_cc2478821c3d44c7b3c6ad760cef563a_008/before.glb" poster="gallery/clr_cc2478821c3d44c7b3c6ad760cef563a_008/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
-                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
-                </div>
-            </div>
-            <div class="results-gallery-item">
-                <div class="rg-card-head">
-                    <span class="rg-chip" data-type="material">Material</span>
-                    <span class="rg-prompt">&ldquo;Change the table material to polished marble&rdquo;</span>
-                </div>
-                <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/mat_c1ad91fe9d214b7a9ba19c990247ce5e_004/after.glb" poster="gallery/mat_c1ad91fe9d214b7a9ba19c990247ce5e_004/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/mat_c1ad91fe9d214b7a9ba19c990247ce5e_004/before.glb" poster="gallery/mat_c1ad91fe9d214b7a9ba19c990247ce5e_004/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
-                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
-                </div>
-            </div>
-            <div class="results-gallery-item">
-                <div class="rg-card-head">
-                    <span class="rg-chip" data-type="global">Global</span>
-                    <span class="rg-prompt">&ldquo;Transform the entire object into a dieselpunk rust-and-rivets style.&rdquo;</span>
-                </div>
-                <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/glb_be818b5570914b4f8566020d3803c4e6_011/after.glb" poster="gallery/glb_be818b5570914b4f8566020d3803c4e6_011/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/glb_be818b5570914b4f8566020d3803c4e6_011/before.glb" poster="gallery/glb_be818b5570914b4f8566020d3803c4e6_011/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
-                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
-                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
                 </div>
             </div>
         </div>
@@ -1499,332 +1367,80 @@
         });
     </script>
 
-    <!-- Results Gallery Split Viewer Logic -->
+    <!-- Editing card: deferred load + synced before/after cameras -->
     <script type="module">
-        import * as THREE from 'three';
-        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        (function () {
+            document.querySelectorAll('.edit-card').forEach(card => {
+                const before = card.querySelector('.ec-before');
+                const after  = card.querySelector('.ec-after');
+                const loadBtn = card.querySelector('.ec-load');
+                if (!before || !after) return;
+                const viewers = [before, after];
 
-        // Hover to show seg image
-        document.querySelectorAll('.rg-input img[data-seg]').forEach(img => {
-            const originalSrc = img.getAttribute('src');
-            const segSrc = img.dataset.seg;
-            // Preload seg image
-            const preload = new Image(); preload.src = segSrc;
-            img.parentElement.addEventListener('mouseenter', () => { img.src = segSrc; });
-            img.parentElement.addEventListener('mouseleave', () => { img.src = originalSrc; });
-        });
+                let theta = Math.PI, phi = Math.PI / 2, radius = 0, fov = 0, defRadius = 0;
+                let orbiting = false, lastX = 0, lastY = 0;
+                let auto = true, lastT = 0, started = false, loaded = false;
+                const ROT = 0.008, ZOOM = 0.001, AUTO = 0.005, RESUME = 2000;
 
-        (function() {
-            const galleryItems = document.querySelectorAll('.results-gallery-item');
-            galleryItems.forEach(item => {
-                const sv = item.querySelector('.split-viewer');
-                if (!sv) return;
-
-                const textured = sv.querySelector('.sv-textured');
-                const wireframe = sv.querySelector('.sv-wireframe');
-                const slider = sv.querySelector('.sv-slider');
-
-                // Defer loading: move src to data-src
-                const texturedSrc = textured.dataset.src;
-                const wireframeSrc = wireframe.dataset.src;
-
-                // Add load button
-                const loadBtn = document.createElement('button');
-                loadBtn.className = 'sv-load-btn';
-                loadBtn.textContent = 'Load 3D';
-                sv.appendChild(loadBtn);
-
-                let modelLoaded = false;
                 loadBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    if (modelLoaded) return;
-                    modelLoaded = true;
+                    if (loaded) return;
+                    loaded = true;
                     loadBtn.textContent = 'Loading...';
-                    textured.style.visibility = 'visible';
-                    wireframe.style.visibility = 'visible';
-                    textured.setAttribute('src', texturedSrc);
-                    wireframe.setAttribute('src', wireframeSrc);
-                    textured.addEventListener('load', () => {
-                        loadBtn.textContent = '✓ Loaded';
-                        loadBtn.classList.add('loaded');
-                        setTimeout(() => {
-                            loadBtn.style.display = 'none';
-                            closeBtn.style.display = 'block';
-                        }, 1500);
-                        // Pre-init normal view in background (store promise)
-                        normalInitPromise = initNormalView();
-                    }, { once: true });
-                });
-
-                // Close button to unload model and free resources
-                const closeBtn = document.createElement('button');
-                closeBtn.className = 'sv-load-btn';
-                closeBtn.textContent = '✕ Close';
-                closeBtn.style.display = 'none';
-                closeBtn.style.background = 'rgba(239, 68, 68, 0.8)';
-                closeBtn.style.borderColor = 'rgba(239, 68, 68, 0.5)';
-                sv.appendChild(closeBtn);
-                closeBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    textured.removeAttribute('src');
-                    wireframe.removeAttribute('src');
-                    // Hide viewers to avoid last frame residue
-                    textured.style.visibility = 'hidden';
-                    wireframe.style.visibility = 'hidden';
-                    // Clean up normal view
-                    normalActive = false;
-                    normalReady = false;
-                    if (normalCanvas) { normalCanvas.remove(); normalCanvas = null; }
-                    if (normalRenderer) { normalRenderer.dispose(); normalRenderer = null; }
-                    normalScene3 = null; normalCamera3 = null; normalModel3 = null;
-                    normalCheckbox.checked = false;
-                    // Reset UI
-                    modelLoaded = false;
-                    closeBtn.style.display = 'none';
-                    loadBtn.style.display = 'block';
-                    loadBtn.textContent = 'Load 3D';
-                    loadBtn.classList.remove('loaded');
-                });
-
-                // Add normal toggle to each split-viewer
-                const toggleEl = document.createElement('label');
-                toggleEl.className = 'sv-normal-toggle';
-                toggleEl.innerHTML = '<input type="checkbox"><span class="sv-normal-switch"></span><span class="sv-normal-text">Normal</span>';
-                sv.appendChild(toggleEl);
-                const normalCheckbox = toggleEl.querySelector('input');
-
-                // Add expand button
-                const expandBtn = document.createElement('button');
-                expandBtn.className = 'sv-expand-btn';
-                expandBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
-                sv.appendChild(expandBtn);
-                expandBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    window._openExpandModal(item);
-                });
-
-                // Add camera reset button
-                const resetBtn = document.createElement('button');
-                resetBtn.className = 'sv-reset-btn';
-                resetBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>';
-                sv.appendChild(resetBtn);
-                resetBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (defaultRadius) {
-                        theta = Math.PI; phi = Math.PI/2; radius = defaultRadius;
-                        isAutoRotating = false;
-                        lastInteractTime = Date.now();
-                    }
-                });
-
-                // Slider
-                let dragging = false;
-                function updateSplit(pct) {
-                    pct = Math.max(5, Math.min(95, pct));
-                    slider.style.left = pct + '%';
-                    wireframe.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
-                    textured.style.clipPath = `inset(0 0 0 ${pct}%)`;
-                    const nc = sv.querySelector('.sv-normal-canvas');
-                    if (nc) nc.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
-                }
-
-                slider.addEventListener('pointerdown', (e) => {
-                    dragging = true;
-                    slider.setPointerCapture(e.pointerId);
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-                document.addEventListener('pointermove', (e) => {
-                    if (!dragging) return;
-                    const rect = sv.getBoundingClientRect();
-                    updateSplit(((e.clientX - rect.left) / rect.width) * 100);
-                });
-                document.addEventListener('pointerup', () => { dragging = false; });
-
-                // Camera sync
-                let theta = 0, phi = 1.2, radius = 0, fov = 0, defaultRadius = 0;
-                let orbiting = false, lastX = 0, lastY = 0;
-                let isAutoRotating = true, lastInteractTime = 0;
-                const ROTATE_SPEED = 0.008, ZOOM_SPEED = 0.001, AUTO_SPEED = 0.005, RESUME_DELAY = 2000;
-
-                sv.addEventListener('pointerdown', (e) => {
-                    if (e.target.closest('.sv-slider') || e.target.closest('.sv-normal-toggle') || e.target.closest('.sv-load-btn') || e.target.closest('.sv-expand-btn') || e.target.closest('.sv-reset-btn')) return;
-                    orbiting = true; lastX = e.clientX; lastY = e.clientY;
-                    isAutoRotating = false; lastInteractTime = Date.now();
-                    sv.setPointerCapture(e.pointerId); e.preventDefault();
-                });
-                sv.addEventListener('pointermove', (e) => {
-                    if (!orbiting) return;
-                    theta -= (e.clientX - lastX) * ROTATE_SPEED;
-                    phi = Math.max(0.1, Math.min(Math.PI - 0.1, phi - (e.clientY - lastY) * ROTATE_SPEED));
-                    lastX = e.clientX; lastY = e.clientY; lastInteractTime = Date.now();
-                });
-                sv.addEventListener('pointerup', () => { orbiting = false; });
-                sv.addEventListener('wheel', (e) => {
-                    e.preventDefault();
-                    if (!defaultRadius) return;
-                    radius += e.deltaY * defaultRadius * ZOOM_SPEED;
-                    radius = Math.max(defaultRadius * 0.3, Math.min(defaultRadius * 3, radius));
-                    isAutoRotating = false; lastInteractTime = Date.now();
-                }, { passive: false });
-
-                function renderLoop() {
-                    if (!isAutoRotating && !orbiting && Date.now() - lastInteractTime > RESUME_DELAY) isAutoRotating = true;
-                    if (isAutoRotating) theta += AUTO_SPEED;
-                    const orbitStr = `${theta}rad ${phi}rad ${radius}m`;
-                    const fovStr = fov + 'deg';
-                    textured.cameraOrbit = orbitStr; textured.fieldOfView = fovStr;
-                    wireframe.cameraOrbit = orbitStr; wireframe.fieldOfView = fovStr;
-                    if (typeof renderNormal === 'function') renderNormal();
-                    requestAnimationFrame(renderLoop);
-                }
-
-                textured.addEventListener('load', () => {
-                    const orbit = textured.getCameraOrbit();
-                    theta = orbit.theta; phi = orbit.phi; radius = orbit.radius; defaultRadius = radius;
-                    fov = textured.getFieldOfView();
-                    requestAnimationFrame(renderLoop);
-                });
-
-                // Original (left of slider) is shown with its own texture — no material override.
-
-                // Normal rendering with Three.js
-                let normalCanvas = null;
-                let normalRenderer = null;
-                let normalScene3 = null;
-                let normalCamera3 = null;
-                let normalModel3 = null;
-                let normalReady = false;
-                let normalActive = false;
-                let normalInitPromise = null;
-
-                async function initNormalView() {
-                    if (normalCanvas) return;
-
-                    normalCanvas = document.createElement('canvas');
-                    normalCanvas.className = 'sv-normal-canvas';
-                    normalCanvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:3;display:none;clip-path:inset(0 50% 0 0);pointer-events:none;';
-                    sv.appendChild(normalCanvas);
-
-                    const rect = sv.getBoundingClientRect();
-                    const w = rect.width, h = rect.height;
-
-                    normalRenderer = new THREE.WebGLRenderer({ canvas: normalCanvas, antialias: true, alpha: true });
-                    normalRenderer.setSize(w, h);
-                    normalRenderer.setPixelRatio(window.devicePixelRatio);
-                    normalRenderer.setClearColor(0x0d0d14, 1);
-
-                    normalScene3 = new THREE.Scene();
-                    normalCamera3 = new THREE.PerspectiveCamera(30, w / h, 0.01, 100);
-
-                    const glbSrc = wireframe.dataset.src || wireframe.getAttribute('src');
-                    const loader = new GLTFLoader();
-                    const gltf = await loader.loadAsync(glbSrc);
-                    normalModel3 = gltf.scene;
-
-                    // Apply MeshNormalMaterial
-                    const normalMat = new THREE.MeshNormalMaterial();
-                    normalModel3.traverse(child => {
-                        if (child.isMesh) child.material = normalMat;
+                    let n = 0;
+                    viewers.forEach(v => {
+                        v.style.visibility = 'visible';
+                        v.setAttribute('src', v.dataset.src);
+                        v.addEventListener('load', () => {
+                            if (++n >= 2) {
+                                loadBtn.textContent = '\u2713 Loaded';
+                                loadBtn.classList.add('loaded');
+                                setTimeout(() => loadBtn.remove(), 900);
+                            }
+                        }, { once: true });
                     });
-
-                    // Center model at origin
-                    const box = new THREE.Box3().setFromObject(normalModel3);
-                    const center = box.getCenter(new THREE.Vector3());
-                    normalModel3.position.sub(center);
-
-                    normalScene3.add(normalModel3);
-                    normalReady = true;
-                }
-
-                // Sync Three.js camera with model-viewer's actual orbit
-                let lastNormalW = 0, lastNormalH = 0;
-                function renderNormal() {
-                    if (!normalReady || !normalActive || !normalRenderer) return;
-                    // Resize if container changed (e.g. modal expand)
-                    const rect = sv.getBoundingClientRect();
-                    const w = Math.round(rect.width), h = Math.round(rect.height);
-                    if (w !== lastNormalW || h !== lastNormalH) {
-                        lastNormalW = w; lastNormalH = h;
-                        normalRenderer.setSize(w, h);
-                        normalCamera3.aspect = w / h;
-                        normalCamera3.updateProjectionMatrix();
-                    }
-                    // Read actual camera state from model-viewer (after its internal interpolation)
-                    const orbit = textured.getCameraOrbit();
-                    const actualFov = textured.getFieldOfView();
-                    const r = orbit.radius;
-                    const t = orbit.theta;
-                    const p = orbit.phi;
-                    const x = r * Math.sin(p) * Math.sin(t);
-                    const y = r * Math.cos(p);
-                    const z = r * Math.sin(p) * Math.cos(t);
-                    normalCamera3.position.set(x, y, z);
-                    normalCamera3.lookAt(0, 0, 0);
-                    normalCamera3.fov = actualFov;
-                    normalCamera3.updateProjectionMatrix();
-                    normalRenderer.render(normalScene3, normalCamera3);
-                }
-
-                normalCheckbox.addEventListener('change', async () => {
-                    if (normalCheckbox.checked) {
-                        if (normalInitPromise) await normalInitPromise;
-                        else normalInitPromise = initNormalView(), await normalInitPromise;
-                        normalActive = true;
-                        wireframe.style.visibility = 'hidden';
-                        if (normalCanvas) normalCanvas.style.display = 'block';
-                    } else {
-                        normalActive = false;
-                        wireframe.style.visibility = 'visible';
-                        if (normalCanvas) normalCanvas.style.display = 'none';
-                    }
                 });
-            });
-        })();
-    </script>
 
-    <!-- Viewer Modal -->
-    <div class="viewer-modal-overlay" id="viewerModal">
-        <div class="viewer-modal">
-            <button class="viewer-modal-close" id="modalClose">✕</button>
-            <div class="viewer-modal-content" id="modalContent"></div>
-        </div>
-    </div>
+                before.addEventListener('load', () => {
+                    if (started) return;
+                    started = true;
+                    const o = before.getCameraOrbit();
+                    theta = o.theta; phi = o.phi; radius = o.radius; defRadius = radius;
+                    fov = before.getFieldOfView();
+                    requestAnimationFrame(loop);
+                });
 
-    <script type="module">
-        // Modal expand logic: move item into modal, then back on close
-        (function() {
-            const modal = document.getElementById('viewerModal');
-            const modalContent = document.getElementById('modalContent');
-            const modalClose = document.getElementById('modalClose');
-            let currentItem = null;
-            let placeholder = null;
+                viewers.forEach(v => {
+                    v.addEventListener('pointerdown', (e) => {
+                        orbiting = true; lastX = e.clientX; lastY = e.clientY;
+                        auto = false; lastT = Date.now();
+                        v.setPointerCapture(e.pointerId); e.preventDefault();
+                    });
+                    v.addEventListener('pointermove', (e) => {
+                        if (!orbiting) return;
+                        theta -= (e.clientX - lastX) * ROT;
+                        phi = Math.max(0.1, Math.min(Math.PI - 0.1, phi - (e.clientY - lastY) * ROT));
+                        lastX = e.clientX; lastY = e.clientY; lastT = Date.now();
+                    });
+                    v.addEventListener('pointerup', () => { orbiting = false; });
+                    v.addEventListener('pointercancel', () => { orbiting = false; });
+                    v.addEventListener('wheel', (e) => {
+                        e.preventDefault();
+                        if (!defRadius) return;
+                        radius += e.deltaY * defRadius * ZOOM;
+                        radius = Math.max(defRadius * 0.3, Math.min(defRadius * 3, radius));
+                        auto = false; lastT = Date.now();
+                    }, { passive: false });
+                });
 
-            window._openExpandModal = function(item) {
-                currentItem = item;
-                placeholder = document.createElement('div');
-                placeholder.className = 'results-gallery-item';
-                placeholder.style.visibility = 'hidden';
-                item.parentNode.insertBefore(placeholder, item);
-                modalContent.appendChild(item);
-                item.classList.add('expanded');
-                modal.classList.add('active');
-            };
-
-            function closeModal() {
-                if (currentItem && placeholder) {
-                    currentItem.classList.remove('expanded');
-                    placeholder.parentNode.insertBefore(currentItem, placeholder);
-                    placeholder.remove();
-                    placeholder = null;
-                    currentItem = null;
+                function loop() {
+                    if (!auto && !orbiting && Date.now() - lastT > RESUME) auto = true;
+                    if (auto) theta += AUTO;
+                    const os = `${theta}rad ${phi}rad ${radius}m`, fs = fov + 'deg';
+                    viewers.forEach(v => { v.cameraOrbit = os; v.fieldOfView = fs; });
+                    requestAnimationFrame(loop);
                 }
-                modal.classList.remove('active');
-            }
-
-            modalClose.addEventListener('click', closeModal);
-            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
+            });
         })();
     </script>
 </body>
