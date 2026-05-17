@@ -4,17 +4,19 @@ PartFlow 项目页 —— 本地查看说明
 不要直接双击 index.html！浏览器的 file:// 安全策略会挡掉 3D 模型(.glb)
 的加载,页面会显示空白的查看器。
 
-正确做法:在本文件夹里起一个本地服务器,然后用浏览器打开。
+【最简单】双击启动脚本(它会自动起服务器并打开浏览器):
+   - macOS  :双击  启动.command
+   - Windows:双击  启动.bat
+看完后在弹出的终端窗口按 Ctrl+C 关闭。
 
+(macOS 首次双击若提示"无法打开",到 系统设置 > 隐私与安全性 里点"仍要打开";
+ 或在终端执行  chmod +x 启动.command  后再双击。)
+
+【手动方式】如果脚本不可用:
 1) 打开终端,cd 到本文件夹(START_HERE.txt 所在目录)
-
-2) 运行:
-       python3 -m http.server 8000
+2) 运行:  python3 -m http.server 8000
    (Windows 上若 python3 不可用,改用:py -m http.server 8000)
-
-3) 浏览器打开:
-       http://localhost:8000
-
+3) 浏览器打开:  http://localhost:8000
 4) 看完后在终端按 Ctrl+C 关闭服务器。
 
 页面用法
