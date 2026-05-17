@@ -13,25 +13,31 @@ index.html        # the whole page (HTML + CSS + JS inline)
 assets/
   teaser.png      # hero background image      (TODO: replace)
   pipeline.png    # method / pipeline figure   (TODO: replace)
-results/
-  editNN_input.png   # input image / edit instruction thumbnail
-  editNN_src.glb     # original (un-edited) 3D asset
-  editNN_edited.glb  # PartFlow edited 3D asset
+gallery/
+  <edit_id>/
+    before.glb    # source 3D asset
+    after.glb     # edited 3D asset
+    poster.png    # preview thumbnail (shown before "Load 3D")
 ```
 
-The current `assets/` and `results/` files are **placeholders** copied for
-layout testing — replace them with real PartFlow data.
+`assets/` holds **placeholder** figures — replace with real ones.
+`gallery/` holds 7 real editing examples from the Pxform Dataset (one per
+edit type), copied from `outputs/H3D_gallery`.
 
 ## Editing Results section
 
-Each gallery item is a before/after slider:
+The gallery is a **one-column list of edit cards**. Each card has:
 
-- left of the slider  → `editNN_src.glb`    (Original)
-- right of the slider → `editNN_edited.glb` (Edited)
+- a colour-coded **edit-type chip** (addition / deletion / modification /
+  scale / color / material / global)
+- the editing **prompt**
+- a before/after slider — left of the slider is `before.glb` (Before),
+  right is `after.glb` (After)
 
-To add a new example, drop `editNN_input.png`, `editNN_src.glb`,
-`editNN_edited.glb` into `results/` and copy one `<div class="results-gallery-item">`
-block in `index.html`.
+To add a new example: copy a `gallery/<edit_id>/` folder (with `before.glb`,
+`after.glb`, `poster.png`) and copy one `<div class="results-gallery-item">`
+block in `index.html`, updating the chip `data-type`, prompt and the three
+file paths.
 
 ## TODO before publishing
 

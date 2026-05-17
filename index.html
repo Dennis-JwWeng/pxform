@@ -402,9 +402,46 @@
 
         /* Results Gallery */
         .results-gallery {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Edit card header: edit-type chip + prompt */
+        .rg-card-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rg-chip {
+            flex-shrink: 0;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 100px;
+            border: 1px solid transparent;
+        }
+
+        .rg-chip[data-type="addition"]     { color: #4ade80; background: rgba(74,222,128,0.12);  border-color: rgba(74,222,128,0.3); }
+        .rg-chip[data-type="deletion"]     { color: #f87171; background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.3); }
+        .rg-chip[data-type="modification"] { color: #818cf8; background: rgba(129,140,248,0.12); border-color: rgba(129,140,248,0.3); }
+        .rg-chip[data-type="scale"]        { color: #fbbf24; background: rgba(251,191,36,0.12);  border-color: rgba(251,191,36,0.3); }
+        .rg-chip[data-type="color"]        { color: #f472b6; background: rgba(244,114,182,0.12); border-color: rgba(244,114,182,0.3); }
+        .rg-chip[data-type="material"]     { color: #2dd4bf; background: rgba(45,212,191,0.12);  border-color: rgba(45,212,191,0.3); }
+        .rg-chip[data-type="global"]       { color: #a855f7; background: rgba(168,85,247,0.12);  border-color: rgba(168,85,247,0.3); }
+
+        .rg-prompt {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1.5;
         }
 
         /* Camera reset button */
@@ -554,24 +591,8 @@
             overflow: hidden;
             border: 1px solid var(--border);
             background: var(--bg-card);
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .rg-input {
-            aspect-ratio: 1 / 1;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #0d0d14;
-            border-right: 1px solid var(--border);
-            overflow: hidden;
-        }
-
-        .rg-input img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
+            flex-direction: column;
         }
 
         .rg-output {
@@ -580,7 +601,7 @@
         }
 
         .rg-output.split-viewer {
-            height: auto;
+            aspect-ratio: 16 / 10;
         }
 
         .rg-output.split-viewer model-viewer {
@@ -1312,57 +1333,98 @@
         <div class="fade-in">
             <div class="section-label">Editing Results</div>
             <p class="section-desc">
-                Each example shows a PartFlow 3D edit. Click "Load 3D" to load the models, drag to rotate, scroll to zoom. Drag the slider to wipe between the <strong>original</strong> asset (left) and the <strong>edited</strong> result (right).
+                Each card is one editing example from the <strong>Pxform Dataset</strong>: an edit-type tag, the natural-language prompt, and a before/after 3D pair. Click "Load 3D", then drag the slider to wipe between the <strong>Before</strong> asset (left) and the <strong>After</strong> result (right). Drag to rotate, scroll to zoom.
             </p>
         </div>
         <div class="results-gallery fade-in">
             <div class="results-gallery-item">
-                <div class="rg-input"><img src="results/edit01_input.png" alt="Edit input" /></div>
+                <div class="rg-card-head">
+                    <span class="rg-chip" data-type="addition">Addition</span>
+                    <span class="rg-prompt">&ldquo;Add the circular drumhead&rdquo;</span>
+                </div>
                 <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" data-src="results/edit01_edited.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" data-src="results/edit01_src.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;left:10px;">Original</div>
-                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;right:10px;">Edited</div>
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/add_c05369adb63b41968de1cb242c22e51d_001/after.glb" poster="gallery/add_c05369adb63b41968de1cb242c22e51d_001/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/add_c05369adb63b41968de1cb242c22e51d_001/before.glb" poster="gallery/add_c05369adb63b41968de1cb242c22e51d_001/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
                     <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
                 </div>
             </div>
             <div class="results-gallery-item">
-                <div class="rg-input"><img src="results/edit02_input.png" alt="Edit input" /></div>
+                <div class="rg-card-head">
+                    <span class="rg-chip" data-type="deletion">Deletion</span>
+                    <span class="rg-prompt">&ldquo;Remove the wooden pool deck component&rdquo;</span>
+                </div>
                 <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" data-src="results/edit02_edited.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" data-src="results/edit02_src.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;left:10px;">Original</div>
-                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;right:10px;">Edited</div>
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/del_c0f68d79c3974eaea0c45e702eb36b79_002/after.glb" poster="gallery/del_c0f68d79c3974eaea0c45e702eb36b79_002/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/del_c0f68d79c3974eaea0c45e702eb36b79_002/before.glb" poster="gallery/del_c0f68d79c3974eaea0c45e702eb36b79_002/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
                     <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
                 </div>
             </div>
             <div class="results-gallery-item">
-                <div class="rg-input"><img src="results/edit03_input.png" alt="Edit input" /></div>
+                <div class="rg-card-head">
+                    <span class="rg-chip" data-type="modification">Modification</span>
+                    <span class="rg-prompt">&ldquo;Replace the fuselage with a sleek aerodynamic teardrop shape&rdquo;</span>
+                </div>
                 <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" data-src="results/edit03_edited.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" data-src="results/edit03_src.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;left:10px;">Original</div>
-                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;right:10px;">Edited</div>
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/mod_a25aefa12d0c460a8d181912e5dfe8fc_000/after.glb" poster="gallery/mod_a25aefa12d0c460a8d181912e5dfe8fc_000/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/mod_a25aefa12d0c460a8d181912e5dfe8fc_000/before.glb" poster="gallery/mod_a25aefa12d0c460a8d181912e5dfe8fc_000/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
                     <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
                 </div>
             </div>
             <div class="results-gallery-item">
-                <div class="rg-input"><img src="results/edit04_input.png" alt="Edit input" /></div>
+                <div class="rg-card-head">
+                    <span class="rg-chip" data-type="scale">Scale</span>
+                    <span class="rg-prompt">&ldquo;Shrink the pink petal-like structure on top.&rdquo;</span>
+                </div>
                 <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" data-src="results/edit04_edited.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" data-src="results/edit04_src.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;left:10px;">Original</div>
-                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;right:10px;">Edited</div>
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/scl_c5d3643257084bfa8e84fcd2c89c3993_003/after.glb" poster="gallery/scl_c5d3643257084bfa8e84fcd2c89c3993_003/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/scl_c5d3643257084bfa8e84fcd2c89c3993_003/before.glb" poster="gallery/scl_c5d3643257084bfa8e84fcd2c89c3993_003/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
                     <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
                 </div>
             </div>
             <div class="results-gallery-item">
-                <div class="rg-input"><img src="results/edit05_input.png" alt="Edit input" /></div>
+                <div class="rg-card-head">
+                    <span class="rg-chip" data-type="color">Color</span>
+                    <span class="rg-prompt">&ldquo;Repaint the engine in matte crimson red.&rdquo;</span>
+                </div>
                 <div class="rg-output split-viewer">
-                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" data-src="results/edit05_edited.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 0 0 50%);"></model-viewer>
-                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" data-src="results/edit05_src.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
-                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;left:10px;">Original</div>
-                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;right:10px;">Edited</div>
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/clr_c2ba9be6631747f599aef541a5673725_005/after.glb" poster="gallery/clr_c2ba9be6631747f599aef541a5673725_005/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/clr_c2ba9be6631747f599aef541a5673725_005/before.glb" poster="gallery/clr_c2ba9be6631747f599aef541a5673725_005/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
+                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
+                </div>
+            </div>
+            <div class="results-gallery-item">
+                <div class="rg-card-head">
+                    <span class="rg-chip" data-type="material">Material</span>
+                    <span class="rg-prompt">&ldquo;Change the table material to polished marble&rdquo;</span>
+                </div>
+                <div class="rg-output split-viewer">
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/mat_c1ad91fe9d214b7a9ba19c990247ce5e_004/after.glb" poster="gallery/mat_c1ad91fe9d214b7a9ba19c990247ce5e_004/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/mat_c1ad91fe9d214b7a9ba19c990247ce5e_004/before.glb" poster="gallery/mat_c1ad91fe9d214b7a9ba19c990247ce5e_004/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
+                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
+                </div>
+            </div>
+            <div class="results-gallery-item">
+                <div class="rg-card-head">
+                    <span class="rg-chip" data-type="global">Global</span>
+                    <span class="rg-prompt">&ldquo;Render the object with a neon-glow bloom style&rdquo;</span>
+                </div>
+                <div class="rg-output split-viewer">
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/glb_a71cefe9b7c746c1b2fef86e28c994bf_004/after.glb" poster="gallery/glb_a71cefe9b7c746c1b2fef86e28c994bf_004/poster.png" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" data-src="gallery/glb_a71cefe9b7c746c1b2fef86e28c994bf_004/before.glb" poster="gallery/glb_a71cefe9b7c746c1b2fef86e28c994bf_004/poster.png" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;left:12px;">Before</div>
+                    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.04em;padding:4px 11px;border-radius:6px;background:rgba(10,10,15,0.78);color:#e4e4e7;position:absolute;bottom:12px;z-index:6;pointer-events:none;right:12px;">After</div>
                     <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
                 </div>
             </div>
