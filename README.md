@@ -20,9 +20,15 @@ gallery/
     poster.png    # preview thumbnail (shown before "Load 3D")
 ```
 
-`assets/` holds **placeholder** figures — replace with real ones.
-`gallery/` holds 7 real editing examples from the Pxform Dataset (one per
-edit type), copied from `outputs/H3D_gallery`.
+`assets/gallary.png` is the hero background. `assets/pipeline.png` is a
+**placeholder** — replace with the real pipeline figure.
+
+`gallery/` holds 7 editing examples from the Pxform Dataset (one per edit
+type). For each example, `before.glb` and `after.glb` are **jointly
+normalized**: both are centred and scaled by the *same* transform (fit to a
+unit box from their combined bounding box), so the before/after slider stays
+perfectly registered and all cards display objects at a consistent size.
+Examples are chosen to have comparable before/after mesh quality.
 
 ## Editing Results section
 
