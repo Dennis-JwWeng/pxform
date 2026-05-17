@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="PartFlow: a feedforward 3D editing framework that learns from semantic-part transformations. PartFlow performs high-fidelity, part-aware 3D editing in a single forward pass, trained on the Pxform Dataset.">
+    <meta name="description" content="PartFlow: a feedforward 3D editing network that learns from semantic-part transformations. Built on Pxform, a high-quality 3D editing dataset of over 100K before/after pairs across seven edit types, PartFlow achieves state-of-the-art geometric and appearance editing.">
     <title>PartFlow — Feedforward 3D Editing Learns from Semantic-Part Transformation</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
     <script type="importmap">
@@ -1299,9 +1299,8 @@
     <section id="abstract">
         <div class="fade-in">
             <div class="section-label">Abstract</div>
-            <!-- TODO: replace with the final paper abstract -->
             <p class="abstract-text">
-                3D editing aims to modify a 3D asset according to a user intent while preserving the regions that should stay untouched. Existing approaches typically rely on per-asset optimization or iterative diffusion, which are slow and often entangle the edited part with the rest of the shape. We present <strong>PartFlow</strong>, a feedforward 3D editing framework that learns editing directly from semantic-part transformations. The key idea is to treat an edit as a transformation between corresponding semantic parts of a source and a target shape, and to learn a flow that maps the source asset to the edited target in a single forward pass. To train PartFlow, we construct the <strong>Pxform Dataset</strong>, a large-scale collection of paired 3D assets annotated with semantic parts and their part-level transformations, covering a wide range of editing operations. Trained on Pxform, PartFlow performs high-fidelity, part-aware 3D editing without any test-time optimization, generalizes across object categories, and keeps non-edited regions faithfully intact. We hope PartFlow and the Pxform Dataset provide a practical foundation for fast and controllable 3D content editing.
+                3D editing is a fundamental capability for scalable 3D content creation. While image editing has rapidly evolved toward large-scale feedforward generative paradigms, 3D AI generation remains dominated by training-free editing pipelines. A central challenge of feedforward 3D editing lies in the lack of high-quality paired supervision. Editable 3D assets require simultaneous preservation of geometry, multi-view consistency, structural coherence, and localized edit controllability. Existing 3D editing datasets often rely on independently generated assets, image-mediated reconstruction or narrow edit taxonomies, leading to inaccurate localization, weak preservation, blurred edit boundaries, and limited semantic consistency. In this work, we introduce a new perspective: scalable feedforward 3D editing should be learned from semantic-part transformations. Based on this insight, we propose <strong>Pxform</strong>, a high-quality 3D editing dataset with over 100K consistent before/after editing pairs across seven edit types. Instead of treating objects as unstructured shapes, our pipeline grounds edits directly in semantic 3D parts. Built upon Pxform, we further propose <strong>PartFlow</strong>, a feedforward 3D editing network that injects source-aware latent control into pretrained 3D generative priors. PartFlow introduces mask-aware velocity preservation and render-space consistency supervision to jointly improve edit fidelity and source preservation, while requiring no 3D edit mask during inference. Extensive experiments demonstrate that high-quality semantic-part supervision substantially improves scalable 3D editing, enabling PartFlow to achieve state-of-the-art performance on both geometric and appearance editing benchmarks.
             </p>
         </div>
     </section>
@@ -1375,9 +1374,8 @@
         <div class="fade-in">
             <div class="section-label">Method</div>
             <div class="section-title">Framework Overview</div>
-            <!-- TODO: replace with the final method description -->
             <p class="section-desc">
-                PartFlow casts 3D editing as a transformation between corresponding semantic parts of a source and a target shape. Given a source asset and an edit specification, the model identifies the parts to be modified, predicts their part-level transformations, and applies a learned flow that maps the source to the edited result in a single feedforward pass. Trained on the <strong>Pxform Dataset</strong> of paired, part-annotated 3D assets, PartFlow performs part-aware editing without any test-time optimization while keeping non-edited regions intact.
+                We learn scalable feedforward 3D editing from semantic-part transformations. <strong>Pxform</strong> grounds every edit in semantic 3D parts, yielding over 100K consistent before/after editing pairs across seven edit types. Built on this supervision, <strong>PartFlow</strong> injects source-aware latent control into pretrained 3D generative priors, and combines mask-aware velocity preservation with render-space consistency supervision to jointly improve edit fidelity and source preservation — while requiring no 3D edit mask at inference.
             </p>
         </div>
 
