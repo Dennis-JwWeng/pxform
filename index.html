@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PartFlow: a feedforward 3D editing framework that learns from semantic-part transformations. PartFlow performs high-fidelity, part-aware 3D editing in a single forward pass, trained on the Pxform Dataset.">
+    <title>PartFlow — Feedforward 3D Editing Learns from Semantic-Part Transformation</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js">
+    <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --bg: #0a0a0f;
+            --bg-card: #13131a;
+            --bg-card-hover: #1a1a24;
+            --text: #e4e4e7;
+            --text-muted: #a1a1aa;
+            --border: #27272a;
+            --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background effects */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: 0;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-glow-1 {
+            top: -200px;
+            left: -100px;
+            background: #6366f1;
+        }
+
+        .bg-glow-2 {
+            bottom: -200px;
+            right: -100px;
+            background: #a855f7;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 15, 0.8);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-inner {
+            max-width: 80%;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('assets/teaser.png') center top / cover no-repeat;
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1100px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 100px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--primary-light);
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+            letter-spacing: 0.02em;
+        }
+
+        .badge:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .badge-sig {
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .badge-year {
+            color: var(--primary-light);
+        }
+
+        .badge {
+            margin-bottom: 32px;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        h1 .gradient-text {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+
+        .hero-authors {
+            font-size: 1.05rem;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.8;
+        }
+
+        .hero-authors a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .hero-authors a:hover {
+            color: var(--primary-light);
+        }
+
+        .hero-authors sup {
+            color: var(--primary-light);
+            font-size: 0.7rem;
+        }
+
+        .hero-affiliations {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .hero-affiliations sup {
+            color: var(--primary-light);
+            font-size: 0.65rem;
+        }
+
+        .hero-footnote {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 36px;
+            font-style: italic;
+        }
+
+        .abstract-text {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .pipeline-image {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .pipeline-image img {
+            width: 100%;
+            max-width: 1400px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .pipeline-caption {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Teaser */
+        .teaser-section {
+            padding-top: 0;
+            padding-bottom: 40px;
+        }
+
+        .teaser-wrapper {
+            text-align: center;
+        }
+
+        .teaser-wrapper img {
+            width: 100%;
+            max-width: 80%;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        /* Video */
+        .video-wrapper {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            max-width: 1200px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: #0d0d14;
+            min-height: 300px;
+        }
+
+        .video-caption {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Section common */
+        section {
+            position: relative;
+            z-index: 1;
+            max-width: 80%;
+            margin: 0 auto;
+            padding: 100px 24px;
+        }
+
+        .section-label {
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary-light);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 60px;
+        }
+
+        /* Results Gallery */
+        .results-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        /* Camera reset button */
+        .sv-reset-btn {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            z-index: 10;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .sv-reset-btn:hover {
+            background: rgba(99, 102, 241, 0.8);
+            color: #fff;
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .sv-reset-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Expand button */
+        .sv-expand-btn {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            z-index: 10;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .sv-expand-btn:hover {
+            background: rgba(99, 102, 241, 0.8);
+            color: #fff;
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .sv-expand-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Modal overlay */
+        .viewer-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .viewer-modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .viewer-modal {
+            position: relative;
+            width: 90vw;
+            max-width: 1400px;
+        }
+
+        .viewer-modal-close {
+            position: absolute;
+            top: -16px;
+            right: -16px;
+            z-index: 10;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.8);
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .viewer-modal-close:hover {
+            background: rgba(239, 68, 68, 1);
+            transform: scale(1.1);
+        }
+
+        .viewer-modal-content {
+            width: 100%;
+        }
+
+        .viewer-modal-content .results-gallery-item {
+            width: 100%;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .viewer-modal-content .sv-expand-btn {
+            display: none;
+        }
+
+        .viewer-modal-content .rg-input {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .viewer-modal-content .rg-input img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .viewer-modal-content .rg-output.split-viewer {
+            aspect-ratio: 1 / 1;
+            height: auto;
+        }
+
+        .results-gallery-item {
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .rg-input {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0d0d14;
+            border-right: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .rg-input img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .rg-output {
+            background: #13131a;
+            position: relative;
+        }
+
+        .rg-output.split-viewer {
+            height: auto;
+        }
+
+        .rg-output.split-viewer model-viewer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            --poster-color: transparent;
+        }
+
+        @media (max-width: 1200px) {
+            .results-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .results-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sv-load-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 10;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(99, 102, 241, 0.8);
+            border: 1px solid rgba(99, 102, 241, 0.5);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sv-load-btn:hover {
+            background: rgba(99, 102, 241, 1);
+        }
+
+        .sv-load-btn.loaded {
+            background: rgba(34, 197, 94, 0.6);
+            border-color: rgba(34, 197, 94, 0.4);
+            pointer-events: none;
+        }
+
+        .sv-normal-toggle {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .sv-normal-toggle input {
+            display: none;
+        }
+
+        .sv-normal-switch {
+            position: relative;
+            width: 28px;
+            height: 14px;
+            border-radius: 7px;
+            background: var(--border);
+            transition: background 0.2s;
+        }
+
+        .sv-normal-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #fff;
+            transition: transform 0.2s;
+        }
+
+        .sv-normal-toggle input:checked + .sv-normal-switch {
+            background: var(--primary);
+        }
+
+        .sv-normal-toggle input:checked + .sv-normal-switch::after {
+            transform: translateX(14px);
+        }
+
+        .sv-normal-text {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Pipeline / Method */
+        .pipeline-visual {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 48px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .pipeline-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .pipeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 24px 20px;
+            border-radius: 14px;
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            min-width: 140px;
+            transition: all 0.3s;
+        }
+
+        .pipeline-step:hover {
+            background: rgba(99, 102, 241, 0.1);
+            transform: scale(1.05);
+        }
+
+        .pipeline-step .step-icon {
+            font-size: 2rem;
+        }
+
+        .pipeline-step .step-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .pipeline-step .step-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .pipeline-arrow {
+            font-size: 1.5rem;
+            color: var(--primary-light);
+        }
+
+        /* Results / Gallery */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: scale(1.02);
+        }
+
+        .gallery-item .gallery-label {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: rgba(10, 10, 15, 0.8);
+            padding: 4px 12px;
+            border-radius: 8px;
+        }
+
+        /* Viewer */
+        .results-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        .results-row + .results-row {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+
+        .result-label {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-label-ours {
+            color: var(--primary-light);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .result-input-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1 / 1;
+            background: #0d0d14;
+            overflow: hidden;
+        }
+
+        .result-input-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Split viewer (wireframe/textured comparison) */
+        .split-viewer {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .split-viewer model-viewer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            --poster-color: transparent;
+        }
+
+        .split-viewer .sv-textured {
+            z-index: 1;
+            background: #13131a;
+        }
+
+        .split-viewer .sv-wireframe {
+            z-index: 2;
+            background: #0d0d14;
+            pointer-events: none;
+        }
+
+        .sv-slider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            z-index: 10;
+            cursor: ew-resize;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sv-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 6px rgba(99, 102, 241, 0.4);
+        }
+
+        .sv-handle {
+            position: relative;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+        }
+
+        @media (max-width: 1200px) {
+            .results-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .results-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .viewer-container {
+            margin-top: 20px;
+        }
+
+        /* Sync toggle */
+        .sync-toggle {
+            margin-top: 16px;
+        }
+
+        .toggle-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle-label input {
+            display: none;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 38px;
+            height: 20px;
+            border-radius: 10px;
+            background: var(--border);
+            transition: background 0.2s;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #fff;
+            transition: transform 0.2s;
+        }
+
+        .toggle-label input:checked + .toggle-switch {
+            background: var(--primary);
+        }
+
+        .toggle-label input:checked + .toggle-switch::after {
+            transform: translateX(18px);
+        }
+
+        .toggle-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .comparison-viewer {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #13131a;
+            border: 1px solid #27272a;
+            user-select: none;
+        }
+
+        .viewer-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            --poster-color: transparent;
+        }
+
+        .viewer-left {
+            z-index: 2;
+            background: #0d0d14;
+            pointer-events: none;
+        }
+
+        .viewer-right {
+            z-index: 1;
+            background: #13131a;
+        }
+
+        .comparison-slider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            z-index: 10;
+            cursor: ew-resize;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+        }
+
+        .slider-handle {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.5);
+            color: #fff;
+        }
+
+        .slider-handle svg:first-child {
+            margin-right: -6px;
+        }
+
+        .slider-handle svg:last-child {
+            margin-left: -6px;
+        }
+
+        .comparison-label {
+            position: absolute;
+            top: 16px;
+            z-index: 5;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 4px 12px;
+            border-radius: 8px;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .label-left {
+            left: 16px;
+        }
+
+        .label-right {
+            right: 16px;
+        }
+
+        .viewer-caption {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 16px;
+        }
+
+        /* Code block */
+        .code-block {
+            background: #0d0d14;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 40px;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 20px;
+            background: rgba(99, 102, 241, 0.05);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot:nth-child(1) { background: #ef4444; }
+        .code-dot:nth-child(2) { background: #eab308; }
+        .code-dot:nth-child(3) { background: #22c55e; }
+
+        .code-header span {
+            margin-left: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .code-body {
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        .code-body pre {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+        }
+
+        .code-body .keyword { color: #c084fc; }
+        .code-body .string { color: #34d399; }
+        .code-body .comment { color: #52525b; }
+        .code-body .func { color: #60a5fa; }
+
+        /* Citation */
+        .citation-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+        }
+
+        .citation-box pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 60px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 100px 20px 60px;
+            }
+
+            .pipeline-steps {
+                flex-direction: column;
+            }
+
+            .pipeline-arrow {
+                transform: rotate(90deg);
+            }
+
+            section {
+                padding: 60px 20px;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <div class="logo">PartFlow</div>
+            <ul class="nav-links">
+                <li><a href="#abstract">Abstract</a></li>
+                <li><a href="#results">Editing Results</a></li>
+                <li><a href="#method">Method</a></li>
+                <li><a href="#citation">Citation</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-content fade-in">
+            <!-- TODO: update venue/year once decided -->
+            <a href="#" class="badge">
+                <span class="badge-sig">Preprint</span> <span class="badge-year">2026</span>
+            </a>
+            <h1>
+                <span class="gradient-text">PartFlow</span><br>
+                Feedforward 3D Editing Learns from Semantic-Part Transformation
+            </h1>
+            <!-- TODO: fill in real author names, links and affiliations -->
+            <p class="hero-authors">
+                <a href="#" target="_blank">Author One</a><sup>1</sup>,
+                <a href="#" target="_blank">Author Two</a><sup>1</sup>,
+                <a href="#" target="_blank">Author Three</a><sup>2</sup>,
+                <a href="#" target="_blank">Corresponding Author</a><sup>1†</sup>
+            </p>
+            <p class="hero-affiliations">
+                <sup>1</sup>Affiliation One &nbsp;&nbsp;
+                <sup>2</sup>Affiliation Two
+            </p>
+            <p class="hero-footnote">
+                †Corresponding author.
+            </p>
+            <div class="hero-buttons">
+                <a href="#" target="_blank" class="btn btn-primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    Paper
+                </a>
+                <a href="#" target="_blank" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" width="20" height="20"><path d="M76.8 51.2L256 256 76.8 460.8h51.2L256 307.2l128 153.6h51.2L256 256 435.2 51.2h-51.2L256 204.8 128 51.2z"/></svg>
+                    arXiv
+                </a>
+                <a href="#" target="_blank" class="btn btn-secondary">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    Code
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Abstract -->
+    <section id="abstract">
+        <div class="fade-in">
+            <div class="section-label">Abstract</div>
+            <!-- TODO: replace with the final paper abstract -->
+            <p class="abstract-text">
+                3D editing aims to modify a 3D asset according to a user intent while preserving the regions that should stay untouched. Existing approaches typically rely on per-asset optimization or iterative diffusion, which are slow and often entangle the edited part with the rest of the shape. We present <strong>PartFlow</strong>, a feedforward 3D editing framework that learns editing directly from semantic-part transformations. The key idea is to treat an edit as a transformation between corresponding semantic parts of a source and a target shape, and to learn a flow that maps the source asset to the edited target in a single forward pass. To train PartFlow, we construct the <strong>Pxform Dataset</strong>, a large-scale collection of paired 3D assets annotated with semantic parts and their part-level transformations, covering a wide range of editing operations. Trained on Pxform, PartFlow performs high-fidelity, part-aware 3D editing without any test-time optimization, generalizes across object categories, and keeps non-edited regions faithfully intact. We hope PartFlow and the Pxform Dataset provide a practical foundation for fast and controllable 3D content editing.
+            </p>
+        </div>
+    </section>
+
+
+
+    <!-- Results -->
+    <section id="results">
+        <div class="fade-in">
+            <div class="section-label">Editing Results</div>
+            <p class="section-desc">
+                Each example shows a PartFlow 3D edit. Click "Load 3D" to load the models, drag to rotate, scroll to zoom. Drag the slider to wipe between the <strong>original</strong> asset (left) and the <strong>edited</strong> result (right).
+            </p>
+        </div>
+        <div class="results-gallery fade-in">
+            <div class="results-gallery-item">
+                <div class="rg-input"><img src="results/edit01_input.png" alt="Edit input" /></div>
+                <div class="rg-output split-viewer">
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" data-src="results/edit01_edited.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" data-src="results/edit01_src.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;left:10px;">Original</div>
+                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;right:10px;">Edited</div>
+                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
+                </div>
+            </div>
+            <div class="results-gallery-item">
+                <div class="rg-input"><img src="results/edit02_input.png" alt="Edit input" /></div>
+                <div class="rg-output split-viewer">
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" data-src="results/edit02_edited.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" data-src="results/edit02_src.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;left:10px;">Original</div>
+                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;right:10px;">Edited</div>
+                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
+                </div>
+            </div>
+            <div class="results-gallery-item">
+                <div class="rg-input"><img src="results/edit03_input.png" alt="Edit input" /></div>
+                <div class="rg-output split-viewer">
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" data-src="results/edit03_edited.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" data-src="results/edit03_src.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;left:10px;">Original</div>
+                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;right:10px;">Edited</div>
+                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
+                </div>
+            </div>
+            <div class="results-gallery-item">
+                <div class="rg-input"><img src="results/edit04_input.png" alt="Edit input" /></div>
+                <div class="rg-output split-viewer">
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" data-src="results/edit04_edited.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" data-src="results/edit04_src.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;left:10px;">Original</div>
+                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;right:10px;">Edited</div>
+                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
+                </div>
+            </div>
+            <div class="results-gallery-item">
+                <div class="rg-input"><img src="results/edit05_input.png" alt="Edit input" /></div>
+                <div class="rg-output split-viewer">
+                    <model-viewer class="sv-textured" camera-orbit="180deg 90deg auto" data-src="results/edit05_edited.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 0 0 50%);"></model-viewer>
+                    <model-viewer class="sv-wireframe" camera-orbit="180deg 90deg auto" data-src="results/edit05_src.glb" shadow-intensity="1" environment-image="neutral" exposure="1.0" interaction-prompt="none" style="clip-path:inset(0 50% 0 0);pointer-events:none;"></model-viewer>
+                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;left:10px;">Original</div>
+                    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.04em;padding:3px 10px;border-radius:6px;background:rgba(10,10,15,0.75);color:#e4e4e7;position:absolute;bottom:10px;z-index:6;pointer-events:none;right:10px;">Edited</div>
+                    <div class="sv-slider"><div class="sv-line"></div><div class="sv-handle">&#8660;</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Method -->
+    <section id="method">
+        <div class="fade-in">
+            <div class="section-label">Method</div>
+            <div class="section-title">Framework Overview</div>
+            <!-- TODO: replace with the final method description -->
+            <p class="section-desc">
+                PartFlow casts 3D editing as a transformation between corresponding semantic parts of a source and a target shape. Given a source asset and an edit specification, the model identifies the parts to be modified, predicts their part-level transformations, and applies a learned flow that maps the source to the edited result in a single feedforward pass. Trained on the <strong>Pxform Dataset</strong> of paired, part-annotated 3D assets, PartFlow performs part-aware editing without any test-time optimization while keeping non-edited regions intact.
+            </p>
+        </div>
+
+        <div class="pipeline-image fade-in">
+            <!-- TODO: replace assets/pipeline.png with the real PartFlow pipeline figure -->
+            <img src="assets/pipeline.png" alt="PartFlow Framework Overview" />
+            <p class="pipeline-caption">Fig. 1. Overview of the PartFlow feedforward 3D editing framework.</p>
+        </div>
+    </section>
+
+    <!-- Citation -->
+    <section id="citation">
+        <div class="fade-in">
+            <div class="section-label">Citation</div>
+            <p class="section-desc">
+                If you find PartFlow or the Pxform Dataset useful in your research, please consider citing our paper.
+            </p>
+        </div>
+
+        <div class="citation-box fade-in">
+<pre>@article{partflow2026,
+  title   = {PartFlow: Feedforward 3D Editing Learns from Semantic-Part Transformation},
+  author  = {TODO: author list},
+  journal = {arXiv preprint arXiv:TODO},
+  year    = {2026}
+}</pre>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 PartFlow.</p>
+    </footer>
+
+    <!-- Scroll Animation -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+
+    <!-- Split Viewer Logic (per-row independent) -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+        (function() {
+            const rows = document.querySelectorAll('.results-row');
+            const syncToggle = document.getElementById('syncSliderToggle');
+
+            rows.forEach((row) => {
+                const splitViewers = row.querySelectorAll('.split-viewer');
+                const allTextured = [];
+                const allWireframe = [];
+                const allSliders = [];
+                const viewerData = []; // per-viewer normal state
+
+                splitViewers.forEach(sv => {
+                    const t = sv.querySelector('.sv-textured');
+                    const w = sv.querySelector('.sv-wireframe');
+                    const tSrc = t.dataset.src;
+                    const wSrc = w.dataset.src;
+
+                    allTextured.push(t);
+                    allWireframe.push(w);
+                    allSliders.push(sv.querySelector('.sv-slider'));
+                    viewerData.push({ sv, t, w, tSrc, wSrc, normalCanvas: null, normalRenderer: null, normalScene3: null, normalCamera3: null, normalReady: false });
+                });
+
+                // --- Row-level Load button (on the row itself) ---
+                const rowLoadBtn = document.createElement('button');
+                rowLoadBtn.className = 'sv-load-btn';
+                rowLoadBtn.textContent = 'Load 3D';
+                rowLoadBtn.style.position = 'absolute';
+                rowLoadBtn.style.top = '8px';
+                rowLoadBtn.style.right = '8px';
+                rowLoadBtn.style.zIndex = '20';
+                row.style.position = 'relative';
+                row.appendChild(rowLoadBtn);
+
+                const rowCloseBtn = document.createElement('button');
+                rowCloseBtn.className = 'sv-load-btn';
+                rowCloseBtn.textContent = '✕ Close';
+                rowCloseBtn.style.display = 'none';
+                rowCloseBtn.style.position = 'absolute';
+                rowCloseBtn.style.top = '8px';
+                rowCloseBtn.style.right = '8px';
+                rowCloseBtn.style.zIndex = '20';
+                rowCloseBtn.style.background = 'rgba(239, 68, 68, 0.8)';
+                rowCloseBtn.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                row.appendChild(rowCloseBtn);
+
+                let rowLoaded = false;
+
+                rowLoadBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (rowLoaded) return;
+                    rowLoaded = true;
+                    rowLoadBtn.textContent = 'Loading...';
+                    let loadCount = 0;
+                    const total = viewerData.filter(d => d.tSrc).length;
+                    viewerData.forEach(d => {
+                        if (!d.tSrc) return;
+                        d.t.style.visibility = 'visible';
+                        d.w.style.visibility = 'visible';
+                        d.t.setAttribute('src', d.tSrc);
+                        d.w.setAttribute('src', d.wSrc);
+                        d.t.addEventListener('load', () => {
+                            loadCount++;
+                            if (loadCount >= total) {
+                                rowLoadBtn.textContent = '✓ Loaded';
+                                rowLoadBtn.classList.add('loaded');
+                                setTimeout(() => {
+                                    rowLoadBtn.style.display = 'none';
+                                    rowCloseBtn.style.display = 'block';
+                                }, 1000);
+                            }
+                            // Pre-init normal
+                            initNormalForViewer(d);
+                        }, { once: true });
+                    });
+                });
+
+                rowCloseBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    viewerData.forEach(d => {
+                        d.t.removeAttribute('src');
+                        d.w.removeAttribute('src');
+                        d.t.style.visibility = 'hidden';
+                        d.w.style.visibility = 'hidden';
+                        // Clean up normal
+                        d.normalReady = false;
+                        if (d.normalCanvas) { d.normalCanvas.remove(); d.normalCanvas = null; }
+                        if (d.normalRenderer) { d.normalRenderer.dispose(); d.normalRenderer = null; }
+                        d.normalScene3 = null; d.normalCamera3 = null;
+                    });
+                    normalActive = false;
+                    if (rowNormalCheckbox) rowNormalCheckbox.checked = false;
+                    rowLoaded = false;
+                    rowCloseBtn.style.display = 'none';
+                    rowLoadBtn.style.display = 'block';
+                    rowLoadBtn.textContent = 'Load 3D';
+                    rowLoadBtn.classList.remove('loaded');
+                });
+
+                // --- Normal toggle on Pixal3D viewer (first split-viewer in row) ---
+                const pixal3dSv = splitViewers[0];
+                const rowNormalToggle = document.createElement('label');
+                rowNormalToggle.className = 'sv-normal-toggle';
+                rowNormalToggle.innerHTML = '<input type="checkbox"><span class="sv-normal-switch"></span><span class="sv-normal-text">Normal</span>';
+                if (pixal3dSv) pixal3dSv.appendChild(rowNormalToggle);
+                const rowNormalCheckbox = rowNormalToggle.querySelector('input');
+
+                // --- Camera reset button on Pixal3D viewer ---
+                const rowResetBtn = document.createElement('button');
+                rowResetBtn.className = 'sv-reset-btn';
+                rowResetBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>';
+                if (pixal3dSv) pixal3dSv.appendChild(rowResetBtn);
+                rowResetBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (defaultRadius) {
+                        theta = Math.PI; phi = Math.PI/2; radius = defaultRadius;
+                        isAutoRotating = false;
+                        lastInteractTime = Date.now();
+                    }
+                });
+
+                let normalActive = false;
+
+                async function initNormalForViewer(d) {
+                    if (d.normalCanvas) return;
+                    d.normalCanvas = document.createElement('canvas');
+                    d.normalCanvas.className = 'sv-normal-canvas';
+                    d.normalCanvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:3;display:none;clip-path:inset(0 50% 0 0);pointer-events:none;';
+                    d.sv.appendChild(d.normalCanvas);
+
+                    const rect = d.sv.getBoundingClientRect();
+                    d.normalRenderer = new THREE.WebGLRenderer({ canvas: d.normalCanvas, antialias: true, alpha: true });
+                    d.normalRenderer.setSize(rect.width, rect.height);
+                    d.normalRenderer.setPixelRatio(window.devicePixelRatio);
+                    d.normalRenderer.setClearColor(0x0d0d14, 1);
+
+                    d.normalScene3 = new THREE.Scene();
+                    d.normalCamera3 = new THREE.PerspectiveCamera(30, rect.width / rect.height, 0.01, 100);
+
+                    const glbSrc = d.wSrc || d.tSrc;
+                    if (!glbSrc) return;
+                    const loader = new GLTFLoader();
+                    try {
+                        const gltf = await loader.loadAsync(glbSrc);
+                        const model = gltf.scene;
+                        const normalMat = new THREE.MeshNormalMaterial();
+                        model.traverse(child => { if (child.isMesh) child.material = normalMat; });
+                        const box = new THREE.Box3().setFromObject(model);
+                        const center = box.getCenter(new THREE.Vector3());
+                        model.position.sub(center);
+                        d.normalScene3.add(model);
+                        d.normalReady = true;
+                    } catch(e) {}
+                }
+
+                rowNormalCheckbox.addEventListener('change', () => {
+                    normalActive = rowNormalCheckbox.checked;
+                    viewerData.forEach(d => {
+                        if (normalActive) {
+                            d.w.style.visibility = 'hidden';
+                            if (d.normalCanvas) d.normalCanvas.style.display = 'block';
+                        } else {
+                            d.w.style.visibility = 'visible';
+                            if (d.normalCanvas) d.normalCanvas.style.display = 'none';
+                        }
+                    });
+                });
+
+                // --- Slider logic ---
+                let sliderDragging = false;
+                let sliderTarget = null;
+
+                function updateSplit(sv, pct) {
+                    pct = Math.max(5, Math.min(95, pct));
+                    const slider = sv.querySelector('.sv-slider');
+                    const wireframe = sv.querySelector('.sv-wireframe');
+                    const textured = sv.querySelector('.sv-textured');
+                    slider.style.left = pct + '%';
+                    wireframe.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+                    textured.style.clipPath = `inset(0 0 0 ${pct}%)`;
+                    const nc = sv.querySelector('.sv-normal-canvas');
+                    if (nc) nc.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+                }
+
+                function updateSliders(pct) {
+                    if (syncToggle.checked) {
+                        splitViewers.forEach(sv => updateSplit(sv, pct));
+                    } else {
+                        if (sliderTarget) updateSplit(sliderTarget, pct);
+                    }
+                }
+
+                allSliders.forEach(slider => {
+                    slider.addEventListener('pointerdown', (e) => {
+                        sliderDragging = true;
+                        sliderTarget = slider.closest('.split-viewer');
+                        slider.setPointerCapture(e.pointerId);
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+                });
+
+                document.addEventListener('pointermove', (e) => {
+                    if (!sliderDragging || !sliderTarget) return;
+                    const rect = sliderTarget.getBoundingClientRect();
+                    updateSliders(((e.clientX - rect.left) / rect.width) * 100);
+                });
+                document.addEventListener('pointerup', () => { sliderDragging = false; sliderTarget = null; });
+
+                // --- Camera state for this row ---
+                let theta = 0;
+                let phi = 1.2;
+                let radius = 0;
+                let fov = 0;
+                let defaultRadius = 0;
+                let orbiting = false;
+                let lastX = 0, lastY = 0;
+                let isAutoRotating = true;
+                let lastInteractTime = 0;
+                const ROTATE_SPEED = 0.008;
+                const ZOOM_SPEED = 0.001;
+                const AUTO_SPEED = 0.005;
+                const RESUME_DELAY = 2000;
+
+                splitViewers.forEach(sv => {
+                    sv.addEventListener('pointerdown', (e) => {
+                        if (e.target.closest('.sv-slider') || e.target.closest('.sv-load-btn') || e.target.closest('.sv-normal-toggle') || e.target.closest('.sv-reset-btn')) return;
+                        orbiting = true;
+                        lastX = e.clientX;
+                        lastY = e.clientY;
+                        isAutoRotating = false;
+                        lastInteractTime = Date.now();
+                        sv.setPointerCapture(e.pointerId);
+                        e.preventDefault();
+                    });
+                    sv.addEventListener('pointermove', (e) => {
+                        if (!orbiting) return;
+                        const dx = e.clientX - lastX;
+                        const dy = e.clientY - lastY;
+                        lastX = e.clientX;
+                        lastY = e.clientY;
+                        theta -= dx * ROTATE_SPEED;
+                        phi = Math.max(0.1, Math.min(Math.PI - 0.1, phi - dy * ROTATE_SPEED));
+                        lastInteractTime = Date.now();
+                    });
+                    sv.addEventListener('pointerup', () => { orbiting = false; });
+                    sv.addEventListener('pointercancel', () => { orbiting = false; });
+                    sv.addEventListener('wheel', (e) => {
+                        e.preventDefault();
+                        if (!defaultRadius) return;
+                        radius += e.deltaY * defaultRadius * ZOOM_SPEED;
+                        radius = Math.max(defaultRadius * 0.3, Math.min(defaultRadius * 3, radius));
+                        isAutoRotating = false;
+                        lastInteractTime = Date.now();
+                    }, { passive: false });
+                });
+
+                function renderNormals() {
+                    if (!normalActive) return;
+                    viewerData.forEach(d => {
+                        if (!d.normalReady || !d.normalRenderer || !d.normalCamera3) return;
+                        // Resize check
+                        const rect = d.sv.getBoundingClientRect();
+                        const w = Math.round(rect.width), h = Math.round(rect.height);
+                        if (d.normalRenderer.domElement.width !== w * window.devicePixelRatio || d.normalRenderer.domElement.height !== h * window.devicePixelRatio) {
+                            d.normalRenderer.setSize(w, h);
+                            d.normalCamera3.aspect = w / h;
+                            d.normalCamera3.updateProjectionMatrix();
+                        }
+                        const x = radius * Math.sin(phi) * Math.sin(theta);
+                        const y = radius * Math.cos(phi);
+                        const z = radius * Math.sin(phi) * Math.cos(theta);
+                        d.normalCamera3.position.set(x, y, z);
+                        d.normalCamera3.lookAt(0, 0, 0);
+                        d.normalCamera3.fov = fov;
+                        d.normalCamera3.updateProjectionMatrix();
+                        d.normalRenderer.render(d.normalScene3, d.normalCamera3);
+                    });
+                }
+
+                function renderLoop() {
+                    if (!isAutoRotating && !orbiting && Date.now() - lastInteractTime > RESUME_DELAY) {
+                        isAutoRotating = true;
+                    }
+                    if (isAutoRotating) {
+                        theta += AUTO_SPEED;
+                    }
+                    const orbitStr = `${theta}rad ${phi}rad ${radius}m`;
+                    const fovStr = fov + 'deg';
+                    allTextured.forEach(v => { v.cameraOrbit = orbitStr; v.fieldOfView = fovStr; });
+                    allWireframe.forEach(v => { v.cameraOrbit = orbitStr; v.fieldOfView = fovStr; });
+                    renderNormals();
+                    requestAnimationFrame(renderLoop);
+                }
+
+                let initialized = false;
+                allTextured.forEach(v => {
+                    v.addEventListener('load', () => {
+                        if (initialized) return;
+                        initialized = true;
+                        const orbit = v.getCameraOrbit();
+                        theta = orbit.theta;
+                        phi = orbit.phi;
+                        radius = orbit.radius;
+                        defaultRadius = radius;
+                        fov = v.getFieldOfView();
+                        requestAnimationFrame(renderLoop);
+                    });
+                });
+
+                allWireframe.forEach(v => {
+                    v.addEventListener('load', () => {
+                        const model = v.model;
+                        if (model) {
+                            for (const mat of model.materials) {
+                                mat.pbrMetallicRoughness.setBaseColorFactor([0.55, 0.52, 0.50, 1.0]);
+                                mat.pbrMetallicRoughness.setMetallicFactor(0.0);
+                                mat.pbrMetallicRoughness.setRoughnessFactor(0.7);
+                                mat.pbrMetallicRoughness.baseColorTexture.setTexture(null);
+                                mat.normalTexture.setTexture(null);
+                            }
+                        }
+                    });
+                });
+            });
+        })();
+    </script>
+
+    <!-- Results Gallery Split Viewer Logic -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+        // Hover to show seg image
+        document.querySelectorAll('.rg-input img[data-seg]').forEach(img => {
+            const originalSrc = img.getAttribute('src');
+            const segSrc = img.dataset.seg;
+            // Preload seg image
+            const preload = new Image(); preload.src = segSrc;
+            img.parentElement.addEventListener('mouseenter', () => { img.src = segSrc; });
+            img.parentElement.addEventListener('mouseleave', () => { img.src = originalSrc; });
+        });
+
+        (function() {
+            const galleryItems = document.querySelectorAll('.results-gallery-item');
+            galleryItems.forEach(item => {
+                const sv = item.querySelector('.split-viewer');
+                if (!sv) return;
+
+                const textured = sv.querySelector('.sv-textured');
+                const wireframe = sv.querySelector('.sv-wireframe');
+                const slider = sv.querySelector('.sv-slider');
+
+                // Defer loading: move src to data-src
+                const texturedSrc = textured.dataset.src;
+                const wireframeSrc = wireframe.dataset.src;
+
+                // Add load button
+                const loadBtn = document.createElement('button');
+                loadBtn.className = 'sv-load-btn';
+                loadBtn.textContent = 'Load 3D';
+                sv.appendChild(loadBtn);
+
+                let modelLoaded = false;
+                loadBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (modelLoaded) return;
+                    modelLoaded = true;
+                    loadBtn.textContent = 'Loading...';
+                    textured.style.visibility = 'visible';
+                    wireframe.style.visibility = 'visible';
+                    textured.setAttribute('src', texturedSrc);
+                    wireframe.setAttribute('src', wireframeSrc);
+                    textured.addEventListener('load', () => {
+                        loadBtn.textContent = '✓ Loaded';
+                        loadBtn.classList.add('loaded');
+                        setTimeout(() => {
+                            loadBtn.style.display = 'none';
+                            closeBtn.style.display = 'block';
+                        }, 1500);
+                        // Pre-init normal view in background (store promise)
+                        normalInitPromise = initNormalView();
+                    }, { once: true });
+                });
+
+                // Close button to unload model and free resources
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'sv-load-btn';
+                closeBtn.textContent = '✕ Close';
+                closeBtn.style.display = 'none';
+                closeBtn.style.background = 'rgba(239, 68, 68, 0.8)';
+                closeBtn.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                sv.appendChild(closeBtn);
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    textured.removeAttribute('src');
+                    wireframe.removeAttribute('src');
+                    // Hide viewers to avoid last frame residue
+                    textured.style.visibility = 'hidden';
+                    wireframe.style.visibility = 'hidden';
+                    // Clean up normal view
+                    normalActive = false;
+                    normalReady = false;
+                    if (normalCanvas) { normalCanvas.remove(); normalCanvas = null; }
+                    if (normalRenderer) { normalRenderer.dispose(); normalRenderer = null; }
+                    normalScene3 = null; normalCamera3 = null; normalModel3 = null;
+                    normalCheckbox.checked = false;
+                    // Reset UI
+                    modelLoaded = false;
+                    closeBtn.style.display = 'none';
+                    loadBtn.style.display = 'block';
+                    loadBtn.textContent = 'Load 3D';
+                    loadBtn.classList.remove('loaded');
+                });
+
+                // Add normal toggle to each split-viewer
+                const toggleEl = document.createElement('label');
+                toggleEl.className = 'sv-normal-toggle';
+                toggleEl.innerHTML = '<input type="checkbox"><span class="sv-normal-switch"></span><span class="sv-normal-text">Normal</span>';
+                sv.appendChild(toggleEl);
+                const normalCheckbox = toggleEl.querySelector('input');
+
+                // Add expand button
+                const expandBtn = document.createElement('button');
+                expandBtn.className = 'sv-expand-btn';
+                expandBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+                sv.appendChild(expandBtn);
+                expandBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window._openExpandModal(item);
+                });
+
+                // Add camera reset button
+                const resetBtn = document.createElement('button');
+                resetBtn.className = 'sv-reset-btn';
+                resetBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>';
+                sv.appendChild(resetBtn);
+                resetBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (defaultRadius) {
+                        theta = Math.PI; phi = Math.PI/2; radius = defaultRadius;
+                        isAutoRotating = false;
+                        lastInteractTime = Date.now();
+                    }
+                });
+
+                // Slider
+                let dragging = false;
+                function updateSplit(pct) {
+                    pct = Math.max(5, Math.min(95, pct));
+                    slider.style.left = pct + '%';
+                    wireframe.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+                    textured.style.clipPath = `inset(0 0 0 ${pct}%)`;
+                    const nc = sv.querySelector('.sv-normal-canvas');
+                    if (nc) nc.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+                }
+
+                slider.addEventListener('pointerdown', (e) => {
+                    dragging = true;
+                    slider.setPointerCapture(e.pointerId);
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+                document.addEventListener('pointermove', (e) => {
+                    if (!dragging) return;
+                    const rect = sv.getBoundingClientRect();
+                    updateSplit(((e.clientX - rect.left) / rect.width) * 100);
+                });
+                document.addEventListener('pointerup', () => { dragging = false; });
+
+                // Camera sync
+                let theta = 0, phi = 1.2, radius = 0, fov = 0, defaultRadius = 0;
+                let orbiting = false, lastX = 0, lastY = 0;
+                let isAutoRotating = true, lastInteractTime = 0;
+                const ROTATE_SPEED = 0.008, ZOOM_SPEED = 0.001, AUTO_SPEED = 0.005, RESUME_DELAY = 2000;
+
+                sv.addEventListener('pointerdown', (e) => {
+                    if (e.target.closest('.sv-slider') || e.target.closest('.sv-normal-toggle') || e.target.closest('.sv-load-btn') || e.target.closest('.sv-expand-btn') || e.target.closest('.sv-reset-btn')) return;
+                    orbiting = true; lastX = e.clientX; lastY = e.clientY;
+                    isAutoRotating = false; lastInteractTime = Date.now();
+                    sv.setPointerCapture(e.pointerId); e.preventDefault();
+                });
+                sv.addEventListener('pointermove', (e) => {
+                    if (!orbiting) return;
+                    theta -= (e.clientX - lastX) * ROTATE_SPEED;
+                    phi = Math.max(0.1, Math.min(Math.PI - 0.1, phi - (e.clientY - lastY) * ROTATE_SPEED));
+                    lastX = e.clientX; lastY = e.clientY; lastInteractTime = Date.now();
+                });
+                sv.addEventListener('pointerup', () => { orbiting = false; });
+                sv.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    if (!defaultRadius) return;
+                    radius += e.deltaY * defaultRadius * ZOOM_SPEED;
+                    radius = Math.max(defaultRadius * 0.3, Math.min(defaultRadius * 3, radius));
+                    isAutoRotating = false; lastInteractTime = Date.now();
+                }, { passive: false });
+
+                function renderLoop() {
+                    if (!isAutoRotating && !orbiting && Date.now() - lastInteractTime > RESUME_DELAY) isAutoRotating = true;
+                    if (isAutoRotating) theta += AUTO_SPEED;
+                    const orbitStr = `${theta}rad ${phi}rad ${radius}m`;
+                    const fovStr = fov + 'deg';
+                    textured.cameraOrbit = orbitStr; textured.fieldOfView = fovStr;
+                    wireframe.cameraOrbit = orbitStr; wireframe.fieldOfView = fovStr;
+                    if (typeof renderNormal === 'function') renderNormal();
+                    requestAnimationFrame(renderLoop);
+                }
+
+                textured.addEventListener('load', () => {
+                    const orbit = textured.getCameraOrbit();
+                    theta = orbit.theta; phi = orbit.phi; radius = orbit.radius; defaultRadius = radius;
+                    fov = textured.getFieldOfView();
+                    requestAnimationFrame(renderLoop);
+                });
+
+                // Original (left of slider) is shown with its own texture — no material override.
+
+                // Normal rendering with Three.js
+                let normalCanvas = null;
+                let normalRenderer = null;
+                let normalScene3 = null;
+                let normalCamera3 = null;
+                let normalModel3 = null;
+                let normalReady = false;
+                let normalActive = false;
+                let normalInitPromise = null;
+
+                async function initNormalView() {
+                    if (normalCanvas) return;
+
+                    normalCanvas = document.createElement('canvas');
+                    normalCanvas.className = 'sv-normal-canvas';
+                    normalCanvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:3;display:none;clip-path:inset(0 50% 0 0);pointer-events:none;';
+                    sv.appendChild(normalCanvas);
+
+                    const rect = sv.getBoundingClientRect();
+                    const w = rect.width, h = rect.height;
+
+                    normalRenderer = new THREE.WebGLRenderer({ canvas: normalCanvas, antialias: true, alpha: true });
+                    normalRenderer.setSize(w, h);
+                    normalRenderer.setPixelRatio(window.devicePixelRatio);
+                    normalRenderer.setClearColor(0x0d0d14, 1);
+
+                    normalScene3 = new THREE.Scene();
+                    normalCamera3 = new THREE.PerspectiveCamera(30, w / h, 0.01, 100);
+
+                    const glbSrc = wireframe.dataset.src || wireframe.getAttribute('src');
+                    const loader = new GLTFLoader();
+                    const gltf = await loader.loadAsync(glbSrc);
+                    normalModel3 = gltf.scene;
+
+                    // Apply MeshNormalMaterial
+                    const normalMat = new THREE.MeshNormalMaterial();
+                    normalModel3.traverse(child => {
+                        if (child.isMesh) child.material = normalMat;
+                    });
+
+                    // Center model at origin
+                    const box = new THREE.Box3().setFromObject(normalModel3);
+                    const center = box.getCenter(new THREE.Vector3());
+                    normalModel3.position.sub(center);
+
+                    normalScene3.add(normalModel3);
+                    normalReady = true;
+                }
+
+                // Sync Three.js camera with model-viewer's actual orbit
+                let lastNormalW = 0, lastNormalH = 0;
+                function renderNormal() {
+                    if (!normalReady || !normalActive || !normalRenderer) return;
+                    // Resize if container changed (e.g. modal expand)
+                    const rect = sv.getBoundingClientRect();
+                    const w = Math.round(rect.width), h = Math.round(rect.height);
+                    if (w !== lastNormalW || h !== lastNormalH) {
+                        lastNormalW = w; lastNormalH = h;
+                        normalRenderer.setSize(w, h);
+                        normalCamera3.aspect = w / h;
+                        normalCamera3.updateProjectionMatrix();
+                    }
+                    // Read actual camera state from model-viewer (after its internal interpolation)
+                    const orbit = textured.getCameraOrbit();
+                    const actualFov = textured.getFieldOfView();
+                    const r = orbit.radius;
+                    const t = orbit.theta;
+                    const p = orbit.phi;
+                    const x = r * Math.sin(p) * Math.sin(t);
+                    const y = r * Math.cos(p);
+                    const z = r * Math.sin(p) * Math.cos(t);
+                    normalCamera3.position.set(x, y, z);
+                    normalCamera3.lookAt(0, 0, 0);
+                    normalCamera3.fov = actualFov;
+                    normalCamera3.updateProjectionMatrix();
+                    normalRenderer.render(normalScene3, normalCamera3);
+                }
+
+                normalCheckbox.addEventListener('change', async () => {
+                    if (normalCheckbox.checked) {
+                        if (normalInitPromise) await normalInitPromise;
+                        else normalInitPromise = initNormalView(), await normalInitPromise;
+                        normalActive = true;
+                        wireframe.style.visibility = 'hidden';
+                        if (normalCanvas) normalCanvas.style.display = 'block';
+                    } else {
+                        normalActive = false;
+                        wireframe.style.visibility = 'visible';
+                        if (normalCanvas) normalCanvas.style.display = 'none';
+                    }
+                });
+            });
+        })();
+    </script>
+
+    <!-- Viewer Modal -->
+    <div class="viewer-modal-overlay" id="viewerModal">
+        <div class="viewer-modal">
+            <button class="viewer-modal-close" id="modalClose">✕</button>
+            <div class="viewer-modal-content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Modal expand logic: move item into modal, then back on close
+        (function() {
+            const modal = document.getElementById('viewerModal');
+            const modalContent = document.getElementById('modalContent');
+            const modalClose = document.getElementById('modalClose');
+            let currentItem = null;
+            let placeholder = null;
+
+            window._openExpandModal = function(item) {
+                currentItem = item;
+                placeholder = document.createElement('div');
+                placeholder.className = 'results-gallery-item';
+                placeholder.style.visibility = 'hidden';
+                item.parentNode.insertBefore(placeholder, item);
+                modalContent.appendChild(item);
+                item.classList.add('expanded');
+                modal.classList.add('active');
+            };
+
+            function closeModal() {
+                if (currentItem && placeholder) {
+                    currentItem.classList.remove('expanded');
+                    placeholder.parentNode.insertBefore(currentItem, placeholder);
+                    placeholder.remove();
+                    placeholder = null;
+                    currentItem = null;
+                }
+                modal.classList.remove('active');
+            }
+
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
+        })();
+    </script>
+</body>
+</html>
