@@ -1,12 +1,12 @@
 {
-  "columns": ["source.glb", "condition.png", "editformer.glb", "voxhammer.glb", "nano3d.glb", "ours.glb"],
+  "columns": ["source.glb", "condition.png", "ours.glb", "editformer.glb", "voxhammer.glb", "nano3d.glb"],
   "column_labels": {
     "source.glb": "Source",
     "condition.png": "Condition (2D reference image)",
+    "ours.glb": "PartFlow (Ours)",
     "editformer.glb": "3DEditFormer",
     "voxhammer.glb": "VoxHammer",
-    "nano3d.glb": "Nano3D",
-    "ours.glb": "PartFlow (Ours)"
+    "nano3d.glb": "Nano3D"
   },
   "rows": [
     {"id": "cmp01_ceramic_cups",  "edit_type": "addition",     "prompt": "Add all the ceramic cups"},
