@@ -1,0 +1,22 @@
+{
+  "methods": ["source", "editformer", "condition", "voxhammer", "nano3d", "ours"],
+  "method_labels": {
+    "source": "Source",
+    "editformer": "3DEditFormer",
+    "condition": "Condition",
+    "voxhammer": "VoxHammer",
+    "nano3d": "Nano3D",
+    "ours": "PartFlow (Ours)"
+  },
+  "rows": [
+    {"id": "cmp01_ceramic_cups",  "edit_type": "addition",     "prompt": "Add all the ceramic cups"},
+    {"id": "cmp02_blue_circle",   "edit_type": "addition",     "prompt": "Add the blue circular component"},
+    {"id": "cmp03_donut_box",     "edit_type": "addition",     "prompt": "Add the donut box with the text 'Donuts'"},
+    {"id": "cmp04_mortar_bowl",   "edit_type": "deletion",     "prompt": "Remove the mortar bowl and keep only the pestle"},
+    {"id": "cmp05_cabinet_doors", "edit_type": "deletion",     "prompt": "Remove the two cabinet doors from the wardrobe facade"},
+    {"id": "cmp06_balloon",       "edit_type": "modification", "prompt": "Replace the balloon envelope with a geometric faceted polyhedron shape"},
+    {"id": "cmp07_well_base",     "edit_type": "modification", "prompt": "Replace the circular well base with a square stone foundation"},
+    {"id": "cmp08_human_head",    "edit_type": "modification", "prompt": "Replace the human head with a smooth spherical orb"},
+    {"id": "cmp09_ferris_wheel",  "edit_type": "scale",        "prompt": "Shrink the Ferris wheel top component"}
+  ]
+}
