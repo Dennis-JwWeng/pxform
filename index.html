@@ -696,6 +696,13 @@
             --poster-color: transparent;
             visibility: hidden;
         }
+        .cmp-view img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #fff;
+        }
+        .cmp-cell.is-cond { background: #fff; }
         .cmp-label {
             padding: 8px 6px;
             text-align: center;
@@ -1731,7 +1738,7 @@
             <div class="section-label">Comparison</div>
             <div class="section-title">Comparison with Prior Methods</div>
             <p class="section-desc">
-                Qualitative comparison against feedforward 3D editing baselines. Each row is one edit instruction: the leftmost panel is the <strong>Source</strong> asset, followed by each method&rsquo;s result and our <strong>PartFlow</strong> output (highlighted). Every mesh is decoded through the same TRELLIS pipeline. Click &ldquo;Load 3D&rdquo;, then drag any viewer in a row &mdash; all panels in that row rotate together.
+                Qualitative comparison against feedforward 3D editing baselines. Each row is one edit instruction: the leftmost panel is the <strong>Source</strong> 3D asset, followed by the 2D <strong>Condition</strong> reference, then each baseline&rsquo;s result and our <strong>PartFlow</strong> output (highlighted). Click &ldquo;Load 3D&rdquo;, then drag any 3D viewer in a row &mdash; all 3D panels in that row rotate together.
             </p>
         </div>
         <div class="compare-gallery fade-in">
@@ -1747,13 +1754,13 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp01_ceramic_cups/source.glb"></model-viewer></div>
                         <div class="cmp-label">Source</div>
                     </div>
+                    <div class="cmp-cell is-cond">
+                        <div class="cmp-view"><img src="comparison/cmp01_ceramic_cups/condition.png" alt="condition reference" loading="lazy"></div>
+                        <div class="cmp-label">Condition</div>
+                    </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp01_ceramic_cups/editformer.glb"></model-viewer></div>
                         <div class="cmp-label">3DEditFormer</div>
-                    </div>
-                    <div class="cmp-cell">
-                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp01_ceramic_cups/condition.glb"></model-viewer></div>
-                        <div class="cmp-label">Condition</div>
                     </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp01_ceramic_cups/voxhammer.glb"></model-viewer></div>
@@ -1781,13 +1788,13 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp02_blue_circle/source.glb"></model-viewer></div>
                         <div class="cmp-label">Source</div>
                     </div>
+                    <div class="cmp-cell is-cond">
+                        <div class="cmp-view"><img src="comparison/cmp02_blue_circle/condition.png" alt="condition reference" loading="lazy"></div>
+                        <div class="cmp-label">Condition</div>
+                    </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp02_blue_circle/editformer.glb"></model-viewer></div>
                         <div class="cmp-label">3DEditFormer</div>
-                    </div>
-                    <div class="cmp-cell">
-                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp02_blue_circle/condition.glb"></model-viewer></div>
-                        <div class="cmp-label">Condition</div>
                     </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp02_blue_circle/voxhammer.glb"></model-viewer></div>
@@ -1815,13 +1822,13 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp03_donut_box/source.glb"></model-viewer></div>
                         <div class="cmp-label">Source</div>
                     </div>
+                    <div class="cmp-cell is-cond">
+                        <div class="cmp-view"><img src="comparison/cmp03_donut_box/condition.png" alt="condition reference" loading="lazy"></div>
+                        <div class="cmp-label">Condition</div>
+                    </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp03_donut_box/editformer.glb"></model-viewer></div>
                         <div class="cmp-label">3DEditFormer</div>
-                    </div>
-                    <div class="cmp-cell">
-                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp03_donut_box/condition.glb"></model-viewer></div>
-                        <div class="cmp-label">Condition</div>
                     </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp03_donut_box/voxhammer.glb"></model-viewer></div>
@@ -1849,13 +1856,13 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp04_mortar_bowl/source.glb"></model-viewer></div>
                         <div class="cmp-label">Source</div>
                     </div>
+                    <div class="cmp-cell is-cond">
+                        <div class="cmp-view"><img src="comparison/cmp04_mortar_bowl/condition.png" alt="condition reference" loading="lazy"></div>
+                        <div class="cmp-label">Condition</div>
+                    </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp04_mortar_bowl/editformer.glb"></model-viewer></div>
                         <div class="cmp-label">3DEditFormer</div>
-                    </div>
-                    <div class="cmp-cell">
-                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp04_mortar_bowl/condition.glb"></model-viewer></div>
-                        <div class="cmp-label">Condition</div>
                     </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp04_mortar_bowl/voxhammer.glb"></model-viewer></div>
@@ -1883,13 +1890,13 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp05_cabinet_doors/source.glb"></model-viewer></div>
                         <div class="cmp-label">Source</div>
                     </div>
+                    <div class="cmp-cell is-cond">
+                        <div class="cmp-view"><img src="comparison/cmp05_cabinet_doors/condition.png" alt="condition reference" loading="lazy"></div>
+                        <div class="cmp-label">Condition</div>
+                    </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp05_cabinet_doors/editformer.glb"></model-viewer></div>
                         <div class="cmp-label">3DEditFormer</div>
-                    </div>
-                    <div class="cmp-cell">
-                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp05_cabinet_doors/condition.glb"></model-viewer></div>
-                        <div class="cmp-label">Condition</div>
                     </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp05_cabinet_doors/voxhammer.glb"></model-viewer></div>
@@ -1917,13 +1924,13 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp06_balloon/source.glb"></model-viewer></div>
                         <div class="cmp-label">Source</div>
                     </div>
+                    <div class="cmp-cell is-cond">
+                        <div class="cmp-view"><img src="comparison/cmp06_balloon/condition.png" alt="condition reference" loading="lazy"></div>
+                        <div class="cmp-label">Condition</div>
+                    </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp06_balloon/editformer.glb"></model-viewer></div>
                         <div class="cmp-label">3DEditFormer</div>
-                    </div>
-                    <div class="cmp-cell">
-                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp06_balloon/condition.glb"></model-viewer></div>
-                        <div class="cmp-label">Condition</div>
                     </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp06_balloon/voxhammer.glb"></model-viewer></div>
@@ -1951,13 +1958,13 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp07_well_base/source.glb"></model-viewer></div>
                         <div class="cmp-label">Source</div>
                     </div>
+                    <div class="cmp-cell is-cond">
+                        <div class="cmp-view"><img src="comparison/cmp07_well_base/condition.png" alt="condition reference" loading="lazy"></div>
+                        <div class="cmp-label">Condition</div>
+                    </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp07_well_base/editformer.glb"></model-viewer></div>
                         <div class="cmp-label">3DEditFormer</div>
-                    </div>
-                    <div class="cmp-cell">
-                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp07_well_base/condition.glb"></model-viewer></div>
-                        <div class="cmp-label">Condition</div>
                     </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp07_well_base/voxhammer.glb"></model-viewer></div>
@@ -1985,13 +1992,13 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp08_human_head/source.glb"></model-viewer></div>
                         <div class="cmp-label">Source</div>
                     </div>
+                    <div class="cmp-cell is-cond">
+                        <div class="cmp-view"><img src="comparison/cmp08_human_head/condition.png" alt="condition reference" loading="lazy"></div>
+                        <div class="cmp-label">Condition</div>
+                    </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp08_human_head/editformer.glb"></model-viewer></div>
                         <div class="cmp-label">3DEditFormer</div>
-                    </div>
-                    <div class="cmp-cell">
-                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp08_human_head/condition.glb"></model-viewer></div>
-                        <div class="cmp-label">Condition</div>
                     </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp08_human_head/voxhammer.glb"></model-viewer></div>
@@ -2019,13 +2026,13 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp09_ferris_wheel/source.glb"></model-viewer></div>
                         <div class="cmp-label">Source</div>
                     </div>
+                    <div class="cmp-cell is-cond">
+                        <div class="cmp-view"><img src="comparison/cmp09_ferris_wheel/condition.png" alt="condition reference" loading="lazy"></div>
+                        <div class="cmp-label">Condition</div>
+                    </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp09_ferris_wheel/editformer.glb"></model-viewer></div>
                         <div class="cmp-label">3DEditFormer</div>
-                    </div>
-                    <div class="cmp-cell">
-                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp09_ferris_wheel/condition.glb"></model-viewer></div>
-                        <div class="cmp-label">Condition</div>
                     </div>
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp09_ferris_wheel/voxhammer.glb"></model-viewer></div>
