@@ -8,7 +8,6 @@
     "nano3d.glb": "Nano3D",
     "ours.glb": "PartFlow (Ours)"
   },
-  "note": "glb files are draco+webp compressed for fast web loading",
   "rows": [
     {"id": "cmp01_ceramic_cups",  "edit_type": "addition",     "prompt": "Add all the ceramic cups"},
     {"id": "cmp02_blue_circle",   "edit_type": "addition",     "prompt": "Add the blue circular component"},
