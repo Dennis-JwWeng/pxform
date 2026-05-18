@@ -60,11 +60,6 @@
     "prompt": "Transform the castle roof section into a thatched roof"
   },
   {
-    "edit_id": "scl_16c2f3b8706f4fd7b64139238f5ab1f8_002",
-    "edit_type": "scale",
-    "prompt": "Shrink the whipped cream topping to a small dollop"
-  },
-  {
     "edit_id": "scl_19808541c0c54990bd7635bf00e27806_002",
     "edit_type": "scale",
     "prompt": "Shrink the alien head to a smaller size"
@@ -73,10 +68,5 @@
     "edit_id": "scl_27b34ca5f7a940bfa3ef5245c664024b_002",
     "edit_type": "scale",
     "prompt": "Shrink the white ceramic cup"
-  },
-  {
-    "edit_id": "scl_4754f1bc1d6341d19b313ad6a51417de_001",
-    "edit_type": "scale",
-    "prompt": "Shrink the umbrella canopy"
   }
 ]
