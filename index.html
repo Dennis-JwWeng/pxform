@@ -1366,17 +1366,10 @@
             <div class="section-label">Video</div>
         </div>
         <div class="video-wrapper fade-in">
-            <!-- TODO: drop the real video at assets/video.mp4, then replace the
-                 placeholder below with:
-                 <video controls preload="metadata" poster="assets/video_poster.jpg">
-                     <source src="assets/video.mp4" type="video/mp4">
-                     Your browser does not support the video tag.
-                 </video>
-            -->
-            <div class="video-placeholder">
-                <div class="vp-icon">&#9658;</div>
-                <p>Video coming soon</p>
-            </div>
+            <video controls preload="metadata">
+                <source src="assets/video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
         </div>
     </section>
 
@@ -2210,9 +2203,13 @@
         </div>
 
         <div class="pipeline-image fade-in">
-            <!-- TODO: replace assets/pipeline.png with the real PartFlow pipeline figure -->
-            <img src="assets/pipeline.png" alt="PartFlow Framework Overview" />
-            <p class="pipeline-caption">Fig. 1. Overview of the PartFlow feedforward 3D editing framework.</p>
+            <img src="assets/pxform_pipeline.png" alt="Pxform Dataset Construction Pipeline" />
+            <p class="pipeline-caption">Fig. 1. The Pxform dataset construction pipeline — semantic-part-grounded 3D editing pairs.</p>
+        </div>
+
+        <div class="pipeline-image fade-in">
+            <img src="assets/partflow_method.png" alt="PartFlow Framework Overview" />
+            <p class="pipeline-caption">Fig. 2. Overview of the PartFlow feedforward 3D editing framework.</p>
         </div>
     </section>
 
