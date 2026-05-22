@@ -671,7 +671,7 @@
         }
         .cmp-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(7, 1fr);
         }
         .cmp-cell {
             position: relative;
@@ -1350,9 +1350,13 @@
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" width="20" height="20"><path d="M76.8 51.2L256 256 76.8 460.8h51.2L256 307.2l128 153.6h51.2L256 256 435.2 51.2h-51.2L256 204.8 128 51.2z"/></svg>
                     arXiv
                 </a>
-                <a href="#" target="_blank" class="btn btn-secondary">
+                <a href="https://github.com/Dennis-JwWeng/PartFlow" target="_blank" class="btn btn-secondary">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                     Code
+                </a>
+                <a href="https://huggingface.co/ART-3D/PartFlow_models/tree/main" target="_blank" class="btn btn-secondary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                    Model
                 </a>
                 <a href="https://huggingface.co/datasets/ART-3D/Pxform_v1" target="_blank" class="btn btn-secondary">
                     <span style="font-size:20px;line-height:1;">🤗</span>
@@ -1429,6 +1433,10 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp01_ceramic_cups/nano3d.glb"></model-viewer></div>
                         <div class="cmp-label">Nano3D</div>
                     </div>
+                    <div class="cmp-cell">
+                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp01_ceramic_cups/rodin.glb"></model-viewer></div>
+                        <div class="cmp-label">Rodin</div>
+                    </div>
                 </div>
             </div>
             <div class="compare-row">
@@ -1462,6 +1470,10 @@
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp02_blue_circle/nano3d.glb"></model-viewer></div>
                         <div class="cmp-label">Nano3D</div>
+                    </div>
+                    <div class="cmp-cell">
+                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp02_blue_circle/rodin.glb"></model-viewer></div>
+                        <div class="cmp-label">Rodin</div>
                     </div>
                 </div>
             </div>
@@ -1497,6 +1509,10 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp03_donut_box/nano3d.glb"></model-viewer></div>
                         <div class="cmp-label">Nano3D</div>
                     </div>
+                    <div class="cmp-cell">
+                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp03_donut_box/rodin.glb"></model-viewer></div>
+                        <div class="cmp-label">Rodin</div>
+                    </div>
                 </div>
             </div>
             <div class="compare-row">
@@ -1530,6 +1546,10 @@
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp04_mortar_bowl/nano3d.glb"></model-viewer></div>
                         <div class="cmp-label">Nano3D</div>
+                    </div>
+                    <div class="cmp-cell">
+                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp04_mortar_bowl/rodin.glb"></model-viewer></div>
+                        <div class="cmp-label">Rodin</div>
                     </div>
                 </div>
             </div>
@@ -1565,6 +1585,10 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp05_cabinet_doors/nano3d.glb"></model-viewer></div>
                         <div class="cmp-label">Nano3D</div>
                     </div>
+                    <div class="cmp-cell">
+                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp05_cabinet_doors/rodin.glb"></model-viewer></div>
+                        <div class="cmp-label">Rodin</div>
+                    </div>
                 </div>
             </div>
             <div class="compare-row">
@@ -1598,6 +1622,10 @@
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp06_balloon/nano3d.glb"></model-viewer></div>
                         <div class="cmp-label">Nano3D</div>
+                    </div>
+                    <div class="cmp-cell">
+                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp06_balloon/rodin.glb"></model-viewer></div>
+                        <div class="cmp-label">Rodin</div>
                     </div>
                 </div>
             </div>
@@ -1633,6 +1661,10 @@
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp07_well_base/nano3d.glb"></model-viewer></div>
                         <div class="cmp-label">Nano3D</div>
                     </div>
+                    <div class="cmp-cell">
+                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp07_well_base/rodin.glb"></model-viewer></div>
+                        <div class="cmp-label">Rodin</div>
+                    </div>
                 </div>
             </div>
             <div class="compare-row">
@@ -1666,6 +1698,10 @@
                     <div class="cmp-cell">
                         <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp08_human_head/nano3d.glb"></model-viewer></div>
                         <div class="cmp-label">Nano3D</div>
+                    </div>
+                    <div class="cmp-cell">
+                        <div class="cmp-view"><model-viewer camera-orbit="180deg 90deg 3m" field-of-view="30deg" min-field-of-view="30deg" max-field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 12m" environment-image="neutral" exposure="1.0" shadow-intensity="1" interaction-prompt="none" data-src="comparison/cmp08_human_head/rodin.glb"></model-viewer></div>
+                        <div class="cmp-label">Rodin</div>
                     </div>
                 </div>
             </div>
